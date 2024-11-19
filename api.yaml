@@ -1,0 +1,824 @@
+openapi: 3.0.0
+info:
+  title: WASAtext API
+  description: continua
+  version: 0.0.5
+  
+tags:
+  - name: "user"
+    description: Endpoint that manages the login
+  - name: "search"
+    description: Endpoint that manages search
+  - name: "chat"
+    description: Endpoint that manages chat
+  - name: "group"
+    description: Endpoint that manages groups
+  - name: "message"
+    description: Endpoint that manages messages
+  - name: "media"
+    description: Endpoint that manages media
+  
+#===============================
+
+paths:
+
+  /session:
+    post:
+      tags: ["login"]
+      summary: Logs in the user
+      description: |-
+        If the user does not exist, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned
+      operationId: doLogin
+      requestBody:
+        description: User details
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user_login"
+
+        required: true
+      responses:
+        '201':
+          description: User log-in action successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/login_return"
+                
+  /users:
+    get:
+      tags: ["search"]
+      summary: Gets the profile of the user with a certain id
+      description: A user can find another user's profile only if he's not banned by the latter. Multiple users might match partially the nickname being searched
+      operationId: searchUser
+      parameters: 
+        - $ref: "#/components/parameters/query_id"
+      responses:
+        '200':
+          $ref: "#/components/responses/user_found"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+    put:
+      tags: ["user"]
+      summary: Modifies the user's nickname
+      description: Modifies the user's nickname
+      operationId: setMyUserName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user_nickname"
+            example:
+              nickname: "continua"
+        required: true
+      responses: 
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: [] 
+        
+  /users/{user_id}/photo:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+    put:
+      tags: ["user"]
+      summary: Modifies the user's photo
+      description: Modifies the user's photo
+      operationId: setMyPhoto
+      requestBody:
+        content: 
+          image/*:
+            schema:
+              $ref: "#/components/schemas/raw_photo"
+            example:
+              photo_data: "010101001"
+        required: true
+      responses:
+        '201':
+          $ref: "#/components/responses/photo_uploaded"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: [] 
+        
+  /users/{user_id}/chats:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+    get:
+      tags: ["chat"]
+      summary: retrieves an user's chats
+      description: get all the chats (single chats and groups) of the user
+      operationId: getMyConversations
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{group_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/group_id"
+    put:
+      tags: ["group"]
+      summary: set the group's name
+      description: set the name of a particular group
+      operationId: setGroupName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/group_name"
+            example:
+              nickname: "continua"
+        required: true
+      responses: 
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+    delete:
+      tags: ["group"]
+      summary: leave a group
+      description: leave a group chat
+      operationId: leaveGroup
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{group_id}/photo:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/group_id"
+    put:
+      tags: ["group"]
+      summary: set the group's photo
+      description: set the photo of a particular group
+      operationId: setGroupPhoto
+      requestBody:
+        content: 
+          image/*:
+            schema:
+              $ref: "#/components/schemas/raw_photo"
+            example:
+              photo_data: "010101001"
+        required: true
+      responses:
+        '201':
+          $ref: "#/components/responses/photo_uploaded"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{group_id}/members/{member_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/group_id"
+      - $ref: "#/components/parameters/member_id"
+    put:
+      tags: ["group"]
+      summary: add a member to the group
+      description: add a member to the chosen group
+      operationId: addToGroup
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{chat_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+    get:
+      tags: ["chat"]
+      summary: retrieves a chat's messages
+      description: get all the messages of an user's chat
+      operationId: getMyConversation
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{chat_id}/messages/{message_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
+    post:
+      tags: ["message"]
+      summary: send a message
+      description: send a message
+      operationId: sendMessage
+      requestBody:
+        description: the message
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/message'
+        required: true
+      
+      responses:
+        '201':
+          $ref: '#/components/responses/message_sent'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+    delete:
+      tags: ["message"]
+      summary: delete a message
+      description: delete a message
+      operationId: deleteMessage
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+  /users/{user_id}/chats/{chat_id}/messages/{message_id}/reaction/{reaction_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
+      - $ref: "#/components/parameters/reaction_id"
+      
+    put:
+      tags: ["message"]
+      summary: comment a message
+      description: send a reaction to a particular message
+      operationId: commentMessage
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: "#/components/schemas/reaction"
+            example: continua
+        required: true
+      responses:
+        '201':
+          $ref: "#/components/responses/reaction_uploaded"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+    delete:
+      tags: ["message"]
+      summary: uncomment a message
+      description: delete the reaction of a message
+      operationId: uncommentMessage
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+  
+  /users/{user_id}/chats/{chat_id}/messages/forwarded/{message_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
+    post:
+      tags: ["message"]
+      summary: forward a message
+      description: forward a message from a chat to another
+      operationId: forwardMessage
+      requestBody:
+        description: continua
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/message'
+        required: true
+      
+      responses:
+        '201':
+          $ref: '#/components/responses/message_sent'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{chat_id}/media/{media_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/media_id"
+    post:
+      tags: ["media"]
+      summary: send a photo
+      description: send a photo
+      operationId: sendPhoto
+      requestBody:
+        description: the photo
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/photo'
+        required: true
+      
+      responses:
+        '201':
+          $ref: '#/components/responses/message_sent'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+    delete:
+      tags: ["media"]
+      summary: delete a photo
+      description: delete a photo
+      operationId: deletePhoto
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+#================================
+  
+  
+components:
+
+#---------------------------------
+  parameters:
+  
+    query_id:
+        name: id
+        in: query
+        description: id of the user that is being searched
+        schema:
+          description: usual *identifier*
+          type: string
+          pattern: '^.*?$'
+          minLength: 3
+          maxLength: 16
+          example: "Mario3"
+        example: "Mario3"
+        
+    identifier:
+      name: user_id
+      in: path
+      description: A user's unique id
+      required: true
+      schema:
+        description: String between 3-16 characters
+        type: string
+        pattern: '^.*?$'
+        example: Sara23
+        minLength: 3
+        maxLength: 16
+        readOnly: true
+        
+    group_id:
+      name: group_id
+      in: path
+      description: A group's unique id
+      required: true
+      schema:
+        description: String between 3-16 characters
+        type: string
+        pattern: '^.*?$'
+        example: Fangroup2
+        minLength: 3
+        maxLength: 16
+        readOnly: true
+      
+    member_id:
+      name: member_id
+      in: path
+      description: A user's unique id
+      required: true
+      schema:
+        description: String between 3-16 characters
+        type: string
+        pattern: '^.*?$'
+        example: Pietro56
+        minLength: 3
+        maxLength: 16
+        readOnly: true
+        
+    chat_id:
+      name: chat_id
+      in: path
+      description: A chat's unique id
+      required: true
+      schema: 
+        description: Int64 between 0-9999
+        type: integer
+        format: int64
+        minimum: 0
+        maximum: 9999
+        example : 999
+        readOnly: true
+        
+    message_id:
+      name: message_id
+      in: path
+      description: A message's unique id
+      required: true
+      schema: 
+        description: Int64 between 0-9999
+        type: integer
+        format: int64
+        minimum: 0
+        maximum: 9999
+        example : 999
+        readOnly: true
+        
+    reaction_id:
+      name: reaction_id
+      in: path
+      description: A message's unique id
+      required: true
+      schema: 
+        description: Int64 between 0-9999
+        type: integer
+        format: int64
+        minimum: 0
+        maximum: 9999
+        example : 999
+        readOnly: true
+        
+    media_id:
+      name: media_id
+      in: path
+      description: A media's unique id
+      required: true
+      schema: 
+        description: Int64 between 0-9999
+        type: integer
+        format: int64
+        minimum: 0
+        maximum: 9999
+        example : 999
+        readOnly: true
+        
+#---------------------------------
+  schemas:
+  
+    user_nickname:
+      description: It's a user's nickname
+      type: object
+      properties:
+        nickname:
+          description: Any string between 3-16 characters
+          type: string
+          minLength: 3
+          maxLength: 16
+          pattern: '^.*?$'
+          example: "TwinPeaks"
+      example:
+        nickname: "Picchi Gemelli"
+  
+    user_login:
+      description: Identifier sent by user during the login
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/user_nickname/properties/nickname"
+          
+    login_return:
+      description: Identifier returned after the login
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/user_nickname/properties/nickname"
+          
+    users_list:
+      description: List of users found
+      type: object
+      properties:
+        users:
+          description: Array of users with a partial match on the searched nickname
+          type: array
+          minItems: 0
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/complete_user"
+          example:
+            - user_id: Mario1
+              nickname: marioIlGrande
+            - user_id: Luigi2
+              nickname: luigiFantasmi
+            - user_id: Peach3
+              nickname: principessa
+            - user_id: Toad4
+              nickname: rospoFungo
+              
+    complete_user:
+      description: Contains both *unique identifier and nickname of a user
+      type: object
+      properties:
+        user_id:
+          $ref: "#/components/schemas/user_nickname/properties/nickname"
+        nickname:
+          $ref: "#/components/schemas/user_nickname/properties/nickname"
+      example:
+        user_id: "HelpM3"
+        nickname: "stoBene"
+        
+    raw_photo:
+      description: Image content
+      type: object
+      properties:
+        photo_data:
+          description: "Raw data of the photo"
+          type: string
+          minLength: 0
+          maxLength: 100
+          format: binary
+          example: "010110010"
+      example: 
+        photo_data: "010110010"
+        
+    photo:
+      description: Contains the essential info of a photo
+      type: object
+      properties:
+        date:
+          $ref: "#/components/schemas/message/properties/date"
+        reaction:
+          $ref: "#/components/schemas/message/properties/reaction"
+        photo_id:
+          $ref: "#/components/parameters/message_id"
+        status:
+          $ref: "#/components/schemas/message/properties/status"
+        owner:
+          $ref: "#/components/schemas/message/properties/owner"
+          
+    photos:
+      description: Represents a list of photos
+      type: object
+      properties:
+        photos_list:
+          description: List of photos
+          type: array
+          minItems: 0
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/photo"
+      
+    chat:
+      description: Contains the messages of a chat
+      type: array
+      minItems: 1
+      maxItems: 1
+      items: 
+        $ref: "#/components/schemas/messages"
+        
+        
+      properties:
+        chat_id: 
+          $ref: "#/components/parameters/chat_id"
+        photos:
+          $ref: "#/components/schemas/photos"
+        messages:
+          $ref: "#/components/schemas/messages"
+    
+    chats:
+      description: Array of chats
+      type: array
+      minItems: 0
+      maxItems: 100
+      items:
+        $ref: "#/components/schemas/chat"
+      
+    messages:
+      description: Array of messages
+      type: array
+      minItems: 0
+      maxItems: 100
+      items: 
+        $ref: "#/components/schemas/message"
+      
+    message:
+      description: Contains the essential info of a message
+      type: object
+      properties:
+        date:
+          description: Date and time of the messagae
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+          readOnly: true
+        reaction:
+          $ref: "#/components/schemas/reaction"
+        message_id:
+          description: Any number between 0-9999
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 9999
+          readOnly: true
+          example: 965
+        status:
+          description: Status of a message
+          type: string
+          enum: ["gray", "blue"]
+          example: blue
+        owner:
+          $ref: "#/components/schemas/user_nickname/properties/nickname"
+        
+    group_name:
+      description: It's a group's name
+      type: object
+      properties:
+        nickname:
+          description: Any string between 3-16 characters
+          type: string
+          minLength: 3
+          maxLength: 16
+          pattern: '^.*?$'
+          example: "FilmFans"
+      example:
+        nickname: "FilmFans"
+        
+    reaction:
+      description: Reaction to a message
+      type: string
+      enum: ["funny", "sad", "amazed", "angry"]
+      example: funny
+#---------------------------------     
+  responses:
+  
+    unauthorized:
+      description:  Response associated to the 401 http status (Access token is missing. User is not logged in)
+      
+    not_found:
+      description: Response associated to the 404 http status (The requested resource doesn't exist)
+      
+    internal_server_error:
+      description: Response associated to the 500 http status (Server has encountered an unknown error)   
+      
+    user_found:
+      description: There's a match for the given identifier/nickname. User/users found successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/users_list"
+            
+    no_content:
+      description: Response associated to the 204 http status (No content to send for this reques)
+      
+    forbidden:
+      description: Response associated to the 403 http status (Access denied )
+      
+    photo_uploaded:
+      description: photo has been uploaded successfully. Returns the *unique* id of the posted photo
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/photo"
+            
+    stream:
+      description: Contains a list of photos from following users in a reversed chronological order
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/chats"
+    
+    message_sent:
+      description: continua
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/parameters/message_id/schema" #???
+            
+    reaction_uploaded:
+      description: continua
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/reaction"
+#---------------------------------
+
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+            
+            
+            
+            
+            
+            
+            
+            
