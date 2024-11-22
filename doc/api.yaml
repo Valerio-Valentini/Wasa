@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: WASAtext API
   description: continua
-  version: 0.0.5
+  version: 0.0.6
   
 tags:
   - name: "user"
@@ -147,10 +147,82 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}/chats/{group_id}:
+  /users/{user_id}/chats/{chat_id}/photo:
     parameters:
       - $ref: "#/components/parameters/identifier"
-      - $ref: "#/components/parameters/group_id"
+      - $ref: "#/components/parameters/chat_id"
+    put:
+      tags: ["group"]
+      summary: set the group's photo
+      description: set the photo of a particular group
+      operationId: setGroupPhoto
+      requestBody:
+        content: 
+          image/*:
+            schema:
+              $ref: "#/components/schemas/raw_photo"
+            example:
+              photo_data: "010101001"
+        required: true
+      responses:
+        '201':
+          $ref: "#/components/responses/photo_uploaded"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{chat_id}/members/{member_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/member_id"
+    put:
+      tags: ["group"]
+      summary: add a member to the group
+      description: add a member to the chosen group
+      operationId: addToGroup
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+        
+  /users/{user_id}/chats/{chat_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+    get:
+      tags: ["chat"]
+      summary: retrieves a chat's messages
+      description: get all the messages of an user's chat
+      operationId: getMyConversation
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
     put:
       tags: ["group"]
       summary: set the group's name
@@ -194,83 +266,6 @@ paths:
         '500':
           $ref: "#/components/responses/internal_server_error"
       
-      security:
-        - bearerAuth: []
-        
-  /users/{user_id}/chats/{group_id}/photo:
-    parameters:
-      - $ref: "#/components/parameters/identifier"
-      - $ref: "#/components/parameters/group_id"
-    put:
-      tags: ["group"]
-      summary: set the group's photo
-      description: set the photo of a particular group
-      operationId: setGroupPhoto
-      requestBody:
-        content: 
-          image/*:
-            schema:
-              $ref: "#/components/schemas/raw_photo"
-            example:
-              photo_data: "010101001"
-        required: true
-      responses:
-        '201':
-          $ref: "#/components/responses/photo_uploaded"
-        '401':
-          $ref: "#/components/responses/unauthorized"
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '500':
-          $ref: "#/components/responses/internal_server_error"
-      security:
-        - bearerAuth: []
-        
-  /users/{user_id}/chats/{group_id}/members/{member_id}:
-    parameters:
-      - $ref: "#/components/parameters/identifier"
-      - $ref: "#/components/parameters/group_id"
-      - $ref: "#/components/parameters/member_id"
-    put:
-      tags: ["group"]
-      summary: add a member to the group
-      description: add a member to the chosen group
-      operationId: addToGroup
-      responses:
-        '204':
-          $ref: "#/components/responses/no_content"
-        '401':
-          $ref: "#/components/responses/unauthorized"
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '404':
-          $ref: "#/components/responses/not_found"
-        '500':
-          $ref: "#/components/responses/internal_server_error"
-          
-      security:
-        - bearerAuth: []
-        
-  /users/{user_id}/chats/{chat_id}:
-    parameters:
-      - $ref: "#/components/parameters/identifier"
-      - $ref: "#/components/parameters/chat_id"
-    get:
-      tags: ["chat"]
-      summary: retrieves a chat's messages
-      description: get all the messages of an user's chat
-      operationId: getMyConversation
-      responses:
-        '200':
-          $ref: "#/components/responses/stream"
-        '401':
-          $ref: "#/components/responses/unauthorized"
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '404':
-          $ref: "#/components/responses/not_found"
-        '500':
-          $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: []
         
@@ -340,7 +335,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/reaction"
-            example: continua
+            example: "funny"
         required: true
       responses:
         '201':
@@ -465,7 +460,7 @@ components:
         in: query
         description: id of the user that is being searched
         schema:
-          description: usual *identifier*
+          description: usual identifier
           type: string
           pattern: '^.*?$'
           minLength: 3
@@ -483,20 +478,6 @@ components:
         type: string
         pattern: '^.*?$'
         example: Sara23
-        minLength: 3
-        maxLength: 16
-        readOnly: true
-        
-    group_id:
-      name: group_id
-      in: path
-      description: A group's unique id
-      required: true
-      schema:
-        description: String between 3-16 characters
-        type: string
-        pattern: '^.*?$'
-        example: Fangroup2
         minLength: 3
         maxLength: 16
         readOnly: true
@@ -624,7 +605,7 @@ components:
               nickname: rospoFungo
               
     complete_user:
-      description: Contains both *unique identifier and nickname of a user
+      description: Contains both unique identifier and nickname of a user
       type: object
       properties:
         user_id:
@@ -755,7 +736,7 @@ components:
       description: Reaction to a message
       type: string
       enum: ["funny", "sad", "amazed", "angry"]
-      example: funny
+      example: "funny"
 #---------------------------------     
   responses:
   
@@ -782,7 +763,7 @@ components:
       description: Response associated to the 403 http status (Access denied )
       
     photo_uploaded:
-      description: photo has been uploaded successfully. Returns the *unique* id of the posted photo
+      description: photo has been uploaded successfully. Returns the unique id of the posted photo
       content:
         application/json:
           schema:
