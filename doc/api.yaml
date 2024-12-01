@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   title: WASAtext API
-  description: continua
-  version: 0.0.6
+  description: Api for WasaText
+  version: 0.0.7
   
 tags:
   - name: "user"
@@ -234,7 +234,7 @@ paths:
             schema:
               $ref: "#/components/schemas/group_name"
             example:
-              nickname: "continua"
+              nickname: "TheGroup"
         required: true
       responses: 
         '204':
@@ -289,7 +289,7 @@ paths:
       
       responses:
         '201':
-          $ref: '#/components/responses/message_sent'
+          $ref: '#/components/responses/operation_successfull'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -339,7 +339,7 @@ paths:
         required: true
       responses:
         '201':
-          $ref: "#/components/responses/reaction_uploaded"
+          $ref: "#/components/responses/operation_successfull"
         '401':
           $ref: "#/components/responses/unauthorized"
         '403':
@@ -385,7 +385,7 @@ paths:
       
       responses:
         '201':
-          $ref: '#/components/responses/message_sent'
+          $ref: '#/components/responses/operation_successfull'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -418,7 +418,7 @@ paths:
       
       responses:
         '201':
-          $ref: '#/components/responses/message_sent'
+          $ref: '#/components/responses/operation_successfull'
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
@@ -639,7 +639,7 @@ components:
         reaction:
           $ref: "#/components/schemas/message/properties/reaction"
         photo_id:
-          $ref: "#/components/parameters/message_id"
+          $ref: "#/components/schemas/message/properties/message_id"
         status:
           $ref: "#/components/schemas/message/properties/status"
         owner:
@@ -664,11 +664,9 @@ components:
       maxItems: 1
       items: 
         $ref: "#/components/schemas/messages"
-        
-        
       properties:
         chat_id: 
-          $ref: "#/components/parameters/chat_id"
+          $ref: "#/components/schemas/message/properties/message_id"
         photos:
           $ref: "#/components/schemas/photos"
         messages:
@@ -737,6 +735,15 @@ components:
       type: string
       enum: ["funny", "sad", "amazed", "angry"]
       example: "funny"
+      
+    response_message:
+      description: response for a successfull operation
+      type: string
+      minLength: 3
+      maxLength: 16
+      pattern: '^.*?$'
+      example: "TwinPeaks"
+      
 #---------------------------------     
   responses:
   
@@ -776,19 +783,14 @@ components:
           schema:
             $ref: "#/components/schemas/chats"
     
-    message_sent:
-      description: continua
+    operation_successfull:
+      description: the operation has gone well
       content:
         application/json:
           schema:
-            $ref: "#/components/parameters/message_id/schema" #???
-            
-    reaction_uploaded:
-      description: continua
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/reaction"
+            $ref: "#/components/schemas/response_message"
+             
+  
 #---------------------------------
 
   securitySchemes:
