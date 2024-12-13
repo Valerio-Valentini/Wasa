@@ -38,10 +38,27 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
-
-	Ping() error
+//----------------------------------------------------- Chats_Functions
+	StartChat(group bool, members []string) (int, error)  //ok
+	AddMember(chat_id int, user_id string) error //ok
+	LeaveChat(chat_id int, user_id string) error //ok
+//----------------------------------------------------- Messages_Functions
+	GetMessagesFromChat(chat_id int) ([]Message, error) //ok ma aggiungi i campi
+	SendMedia(chat_id int, owner string, content string) (int, error) //ok
+	SendMessage(chat_id int, owner string, content string) (int, error) //ok
+	DeleteMessage(owner string, chat_id int, message_id int) error //ok
+	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) //ok
+	ReplyMessage(owner string, reply int, content string) (int, error) //ok
+//----------------------------------------------------- Reactions_Functions
+	ChangeReaction(owner string, reaction string, message int) error //ok
+	DeleteReaction(owner string, message int) error //ok
+	InsertReaction(owner string, reaction string, message int) error //ok
+//----------------------------------------------------- Users_Functions
+	ChangePhoto(user_id string, photo_id int) (int, error) //ok
+	SearchUser(user_id string) ([]User, error) //ok
+	UpdateUser(user_id string, new_user_id string) error //ok
+	InsertUser(username string) error //ok
+	VerifyUser(username string) (bool,error) //ok
 }
 
 type appdbimpl struct {
@@ -55,12 +72,71 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
+	var tables := [6]string{
+		`CREATE TABLE IF NOT EXISTS media_chat (
+		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		owner VARCHAR(16) NOT NULL,
+		chat_id INTEGER NOT NULL,
+		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
+		FOREIGN KEY(user_id) REFERENCES users (user_id)
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS profile_photo (
+		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		owner VARCHAR(16) NOT NULL
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS users (
+		user_id VARCHAR(16) NOT NULL PRIMARY KEY,
+		photo_id INTEGER NOT NULL,
+		FOREIGN KEY(photo_id) REFERENCES media (photo_id)
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS chat (
+		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		group BOOLEAN NOT NULL,
+		chat_photo INTEGER NOT NULL,
+		FOREIGN KEY(chat_photo) REFERENCES media_chat (photo_id)
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS chat_members (
+		user_id VARCHAR(16) NOT NULL,
+		chat_id  INTEGER NOT NULL,
+		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
+		FOREIGN KEY(user_id) REFERENCES users (user_id)
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS messages (
+		message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		chat_id  INTEGER NOT NULL,
+		status VARCHAR(16),
+		date DATETIME DEFAULT CURRENT_TIME_STAMP;
+		owner VARCHAR(16) NOT NULL,
+		forwarded BOOLEAN NOT NULL,
+		reply INTEGER,
+		media INTEGER,
+		content VARCHAR(16),
+		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
+		FOREIGN KEY(owner) REFERENCES users (user_id),
+		FOREIGN KEY(reply) REFERENCES message (message_id),
+		FOREIGN KEY(media) REFERENCES media_chat (photo_id)
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS message_reactions (
+		owner VARCHAR(16) NOT NULL,
+		reaction VARCHAR(16),
+		message_id INTEGER NOT NULL,
+		FOREIGN KEY(owner) REFERENCES users (user_id),
+		FOREIGN KEY(message_id) REFERENCES message (message_id),
+		PRIMARY KEY(owner, message_id)
+		);`,
+
+	}
+
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
-	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
-		_, err = db.Exec(sqlStmt)
+	for(i:= 0; i<len(tables); i++)
+	{
+		_, err = db.Exec(tables[i])
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
