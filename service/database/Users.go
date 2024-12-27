@@ -1,34 +1,28 @@
 package database
 
 
-func (db *appdbimpl) InsertUser (username string) error
-{
+func (db *appdbimpl) InsertUser (username string) error {
 	_, err:= db.c.Exec("INSERT INTO users (user_id) VALUES (?)", username)
-	if err != nil
-	{	
+	if err != nil {	
 		return err
 	}
 
 	return nil
 }
 
-func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error)
-{
+func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error) {
 	_, err:= db.c.Exec("DELETE FROM profile_photo WHERE photo_id = ? AND user_id = ?", photo_id, user_id)
-	if err != nil
-	{	
+	if err != nil {	
 		return -1, err
 	}
 
 	res, err:= db.c.Exec("INSERT INTO profile_photo (user_id, photo_id) VALUES (?)", user_id, photo_id)
-	if err != nil
-	{	
+	if err != nil {	
 		return -1, err
 	}
 	
 	photo_id, err := res.LastInsertId()
-	if err != nil
-	{	
+	if err != nil {	
 		return -1, err
 	}
 
@@ -36,26 +30,22 @@ func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error)
 	return photo_id, nil
 }
 
-func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error
-{
+func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 
 	res, err := VerifyUser(new_user_id)
-	if err != nil || res 
-	{	
+	if err != nil || res {	
 		return -1,err
 	}
 
 	_, err:= db.c.Exec("UPDATE users SET user_id = ? WHERE user_id = ?", new_user_id, user_id)
-	if err != nil
-	{	
+	if err != nil {	
 		return err
 	}
 
 	return nil
 }
 
-func (db *appdbimpl) SearchUser(user_id string) (users []User, error)
-{
+func (db *appdbimpl) SearchUser(user_id string) (users []User, error) {
 	rows, err:= db.c.QueryRow("SELECT * FROM users WHERE user_id LIKE ? ", user_id + "%")
 	
 	if err != nil {

@@ -5,20 +5,17 @@ import (
 	"net/http"
 )
 
-func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext)
-{
+func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	w.Header().Set("Content-Type", "application/json")
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil
-	{
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	chats,err := rt.db.GetChats(user.User_id)
-	if err != nil
-		{
+	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			ctx.Logger.WithError(err).Error("session: can't create response json")
 			return

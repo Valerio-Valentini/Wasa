@@ -1,13 +1,10 @@
 package database
 
-func (db *appdbimpl) VerifyUser (username string) (bool, error)
-{
+func (db *appdbimpl) VerifyUser (username string) (bool, error) {
 	var presence int
 	err:= db.c.QueryRow("SELECT 1 FROM users WHERE user_id = ? LIMIT 1 ", username).Scan(&presence)
-	if err != nil
-	{
-		if err == sql.ErrNoRows
-		{
+	if err != nil {
+		if err == sql.ErrNoRows {
 			return false, nil
 		}
 		
@@ -17,14 +14,11 @@ func (db *appdbimpl) VerifyUser (username string) (bool, error)
 	return true, nil
 }
 
-func (db *appdbimpl) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool, error)
-{
+func (db *appdbimpl) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool, error) {
 	var presence int
 	err:= db.c.QueryRow("SELECT 1 FROM users WHERE user_id = ? AND chat_id = ? LIMIT 1 ", user_id, chat_id).Scan(&presence)
-	if err != nil
-	{
-		if err == sql.ErrNoRows
-		{
+	if err != nil {
+		if err == sql.ErrNoRows {
 			return false, nil
 		}
 		
@@ -34,94 +28,76 @@ func (db *appdbimpl) VerifyUserIsMamberOfChat (user_id string, chat_id int) (boo
 	return true, nil
 }
 
-func (db *appdbimpl) GetIdProfilePicture (user_id string) (int, error)
-{
+func (db *appdbimpl) GetIdProfilePicture (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewId (user_id string) (int, error)
-{
+func (db *appdbimpl) CreateNewId (user_id string) (int, error) {
 	err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	result, err:= db.c.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	id, err := result.LastInsertId()
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int, error)
-{
+func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int, error) {
 	err:= db.c.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	result, err:= db.c.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	id, err := result.LastInsertId()
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil
 }
 
-func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int, error)
-{
+func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM group_photo WHERE chat_id = ?", chat_id).Scan(&id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil
 }
 
-func (db *appdbimpl) GetIdPhoto (user_id string) (int, error)
-{
+func (db *appdbimpl) GetIdPhoto (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM media_chat WHERE user_id = ?", user_id).Scan(&id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewMediaId (user_id string) (int, error)
-{
+func (db *appdbimpl) CreateNewMediaId (user_id string) (int, error) {
 	err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	result, err:= db.c.Exec("INSERT INTO media_chat (user_id) VALUES(?)", user_id)
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	id, err := result.LastInsertId()
-	if err != nil
-	{
+	if err != nil {
 		return nil, err
 	}
 	return id, nil

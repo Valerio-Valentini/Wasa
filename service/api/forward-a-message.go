@@ -5,20 +5,17 @@ import (
 	"net/http"
 )
 
-func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext)
-{
+func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	w.Header().Set("Content-Type", "application/json")
 	var message ForwardedMessage
 	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil
-	{
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	message_id,err := rt.db.ForwardMessage(message.Owner, message.first_chat_id, message.Content, message.second_chat_id)
-	if err != nil
-		{
+	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			ctx.Logger.WithError(err).Error("session: can't create response json")
 			return

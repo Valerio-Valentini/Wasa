@@ -3,14 +3,12 @@ package database
 import "time"
 
 
-type User struct
-{
+type User struct {
 	User_id string `json:"user_id"`
 	Photo_id int `json:"photo_id"`
 }
 
-type Message struct
-{
+type Message struct {
 	Message_id string `json:"user_id"`
 	Chat_id int
 	Status string
@@ -21,8 +19,7 @@ type Message struct
 	Reply int
 	Media int
 }
-type Chat struct
-{
+type Chat struct {
 	Chat_id int
 	Group bool
 	Name string
