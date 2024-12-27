@@ -45,7 +45,7 @@ func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) SearchUser(user_id string) (users []User, error) {
+func (db *appdbimpl) SearchUser(user_id string) ([]User, error) {
 	rows, err:= db.c.QueryRow("SELECT * FROM users WHERE user_id LIKE ? ", user_id + "%")
 	
 	if err != nil {

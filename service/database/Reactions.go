@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) error {
-	res, err := VerifyUserIsMamberOfChat(owner string, chat_id int)
+	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}
@@ -15,7 +15,7 @@ func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) 
 }
 
 func (db *appdbimpl) DeleteReaction(owner string, message int) error {
-	res, err := VerifyUserIsMamberOfChat(owner string, chat_id int)
+	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}
@@ -29,7 +29,7 @@ func (db *appdbimpl) DeleteReaction(owner string, message int) error {
 }
 
 func (db *appdbimpl) ChangeReaction(owner string, reaction string, message int) error {
-	res, err := VerifyUserIsMamberOfChat(owner string, chat_id int)
+	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}

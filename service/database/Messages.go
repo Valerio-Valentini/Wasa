@@ -24,11 +24,11 @@ func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) er
 }
 
 func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) {
-	res1, err := VerifyUserIsMamberOfChat(owner string, chat1_id int)
+	res1, err := VerifyUserIsMamberOfChat(owner, chat1_id)
 	if err != nil {	
 		return -1,err
 	}
-	res2, err := VerifyUserIsMamberOfChat(owner string, chat2_id int)
+	res2, err := VerifyUserIsMamberOfChat(owner, chat2_id)
 	if err != nil {	
 		return -1, err
 	}
@@ -42,7 +42,7 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
-	res, err := VerifyUserIsMamberOfChat(owner string, chat_id int)
+	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}

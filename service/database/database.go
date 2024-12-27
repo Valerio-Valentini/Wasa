@@ -76,7 +76,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	var tables := [6]string{
+	var tables = [6]string{
 		`CREATE TABLE IF NOT EXISTS media_chat (
 		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
 		owner VARCHAR(16) NOT NULL,
@@ -145,7 +145,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	for(i:= 0; i<len(tables); i++) {
+	for(i= 0; i<len(tables); i++) {
 		_, err = db.Exec(tables[i])
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)

@@ -13,8 +13,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int, error){
 	
 	for _,member := range members {
 		_, err:= AddMember(id_chat,member)
-		if err != nil
-		{	
+		if err != nil {	
 			return -1, err
 		}
 	}
