@@ -80,7 +80,7 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error)
 	var messages []Message
 	for rows.Next() {
 		var message Message
-		err = rows.Scan(&message.Message_id, &messa)
+		err = rows.Scan(&message)
 		if err != nil {
 			return nil, err
 		}

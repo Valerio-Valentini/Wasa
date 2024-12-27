@@ -42,13 +42,17 @@ type AppDatabase interface {
 	StartChat(group bool, members []string) (int, error)  //ok
 	AddMember(chat_id int, user_id string) error //ok
 	LeaveChat(chat_id int, user_id string) error //ok
+    GetChats(user_id) ([]chat, error) //ok
+//  UpdateGroupPhoto(user_string, chat_id int, photo_id int) implementa
+//	SetGroupName(user_id string, chat_id int, name string) implementa
 //----------------------------------------------------- Messages_Functions
-	GetMessagesFromChat(chat_id int) ([]Message, error) //ok ma aggiungi i campi
+	GetMessagesFromChat(chat_id int) ([]Message, error) //ok
 	SendMedia(chat_id int, owner string, content string) (int, error) //ok
 	SendMessage(chat_id int, owner string, content string) (int, error) //ok
 	DeleteMessage(owner string, chat_id int, message_id int) error //ok
 	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) //ok
 	ReplyMessage(owner string, reply int, content string) (int, error) //ok
+	//  DeleteMedia (user_id string, photo_id int) error implementa
 //----------------------------------------------------- Reactions_Functions
 	ChangeReaction(owner string, reaction string, message int) error //ok
 	DeleteReaction(owner string, message int) error //ok
@@ -86,6 +90,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 		owner VARCHAR(16) NOT NULL
 		);`,
 
+		`CREATE TABLE IF NOT EXISTS group_photo (
+		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		chat_id INTEGER(16) NOT NULL,
+		FOREIGN KEY(chat_id) REFERENCES chat (chat_id)
+		);`,
+
 		`CREATE TABLE IF NOT EXISTS users (
 		user_id VARCHAR(16) NOT NULL PRIMARY KEY,
 		photo_id INTEGER NOT NULL,
@@ -96,6 +106,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		group BOOLEAN NOT NULL,
 		chat_photo INTEGER NOT NULL,
+		chat_name VARCHAR(16),
 		FOREIGN KEY(chat_photo) REFERENCES media_chat (photo_id)
 		);`,
 

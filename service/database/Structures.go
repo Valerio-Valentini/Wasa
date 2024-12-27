@@ -21,3 +21,10 @@ type Message struct
 	Reply int
 	Media int
 }
+type Chat struct
+{
+	Chat_id int
+	Group bool
+	Name string
+	Photo_id int
+}

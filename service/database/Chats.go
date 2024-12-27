@@ -48,3 +48,38 @@ func (db *appdbimpl) LeaveChat(chat_id int, user_id string) error
 	return nil
 }
 
+func (db *appdbimpl) GetChats(user_id) ([]chat, error)
+{
+	rows, err:= db.c.QueryRow("SELECT chat_id FROM chat_members WHERE user_id = ? ", user_id)
+	
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() { _ = rows.Close() }()
+
+	var chats []Chat
+	for rows.Next() {
+		var id int
+		var chat Chat
+		err = rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		row, err:= db.c.QueryRow("SELECT chat_id FROM chat WHERE chat_id = ? ", chat_id)
+		err := row.Scan(&chat.chat_id, &chat_group, &chat.chat_photo, &chat.chat_name)
+		if err != nil {
+			return nil, err
+		}
+		chats = append(chats, chat)
+	}
+
+	if rows.Err() != nil {
+		return nil, err
+	}
+
+	return chats, nil
+}
+
+
+

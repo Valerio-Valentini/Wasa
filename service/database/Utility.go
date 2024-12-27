@@ -33,3 +33,96 @@ func (db *appdbimpl) VerifyUserIsMamberOfChat (user_id string, chat_id int) (boo
 
 	return true, nil
 }
+
+func (db *appdbimpl) GetIdProfilePicture (user_id string) (int, error)
+{
+	var id int
+	err:= db.c.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
+
+func (db *appdbimpl) CreateNewId (user_id string) (int, error)
+{
+	err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	result, err:= db.c.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
+
+func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int, error)
+{
+	err:= db.c.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	result, err:= db.c.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
+
+func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int, error)
+{
+	var id int
+	err:= db.c.QueryRow("SELECT photo_id FROM group_photo WHERE chat_id = ?", chat_id).Scan(&id)
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
+
+func (db *appdbimpl) GetIdPhoto (user_id string) (int, error)
+{
+	var id int
+	err:= db.c.QueryRow("SELECT photo_id FROM media_chat WHERE user_id = ?", user_id).Scan(&id)
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
+
+func (db *appdbimpl) CreateNewMediaId (user_id string) (int, error)
+{
+	err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	result, err:= db.c.Exec("INSERT INTO media_chat (user_id) VALUES(?)", user_id)
+	if err != nil
+	{
+		return nil, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil
+	{
+		return nil, err
+	}
+	return id, nil
+}
