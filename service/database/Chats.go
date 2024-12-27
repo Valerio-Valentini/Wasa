@@ -1,7 +1,6 @@
 package database
 
-func (db *appdbimpl) StartChat(group bool, members []string) (int, error)
-{
+func (db *appdbimpl) StartChat(group bool, members []string) (int, error){
 	res, err:= db.c.Exec("INSERT INTO chat (group) VALUES (?)", group)
 	if err != nil
 	{	
