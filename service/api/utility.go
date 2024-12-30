@@ -1,4 +1,4 @@
-package database
+package api
 
 func (db *appdbimpl) VerifyUser (username string) (bool, error) {
 	var presence int
