@@ -56,6 +56,6 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 	out.Close()
-	w.WriteHeader(...) //risposta
+	w.WriteHeader(http.StatusOk) 
 
 }

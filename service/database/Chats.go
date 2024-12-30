@@ -71,5 +71,42 @@ func (db *appdbimpl) GetChats(user_id) ([]chat, error) {
 	return chats, nil
 }
 
+func (db *appdbimpl) UpdateGroupPhoto(chat_id int, photo_id int) (int, error) {
+
+	_, err:= db.c.Exec("DELETE FROM group_photo WHERE photo_id = ? AND chat_id = ?", photo_id, chat_id)
+	if err != nil {	
+		return -1, err
+	}
+
+	res, err:= db.c.Exec("INSERT INTO profile_photo (chat_id, photo_id) VALUES (?)", chat_id, photo_id)
+	if err != nil {	
+		return -1, err
+	}
+	
+	photo_id, err := res.LastInsertId()
+	if err != nil {	
+		return -1, err
+	}
+
+
+	return photo_id, nil
+
+}
+
+func (db *appdbimpl) SetGroupName(user_id string, chat_id int, name string) error {
+
+	res, err := VerifyUser(user_id)
+	if err != nil || res {	
+		return err
+	}
+
+	_, err:= db.c.Exec("UPDATE chat SET chat_name = ? WHERE chat_id = ?", name, chat_id)
+	if err != nil {	
+		return err
+	}
+
+	return nil
+}
+
 
 

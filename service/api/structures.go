@@ -2,8 +2,6 @@ package api
 
 import "time"
 
-//aggiungi conversioni
-
 type User struct {
 	User_id string `json:"user_id"`
 	Photo_id int `json:"photo_id"`

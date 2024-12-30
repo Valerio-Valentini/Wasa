@@ -43,8 +43,8 @@ type AppDatabase interface {
 	AddMember(chat_id int, user_id string) error //ok
 	LeaveChat(chat_id int, user_id string) error //ok
     GetChats(user_id) ([]chat, error) //ok
-//  UpdateGroupPhoto(user_string, chat_id int, photo_id int) implementa
-//	SetGroupName(user_id string, chat_id int, name string) implementa
+    UpdateGroupPhoto(chat_id int, photo_id int) (int, error) //ok
+	SetGroupName(user_id string, chat_id int, name string) error //ok
 //----------------------------------------------------- Messages_Functions
 	GetMessagesFromChat(chat_id int) ([]Message, error) //ok
 	SendMedia(chat_id int, owner string, content string) (int, error) //ok
@@ -52,7 +52,7 @@ type AppDatabase interface {
 	DeleteMessage(owner string, chat_id int, message_id int) error //ok
 	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) //ok
 	ReplyMessage(owner string, reply int, content string) (int, error) //ok
-	//  DeleteMedia (user_id string, photo_id int) error implementa
+	DeleteMedia(user_id string, photo_id int, chat_id int) error //ok
 //----------------------------------------------------- Reactions_Functions
 	ChangeReaction(owner string, reaction string, message int) error //ok
 	DeleteReaction(owner string, message int) error //ok

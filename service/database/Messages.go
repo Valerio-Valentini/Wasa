@@ -94,3 +94,12 @@ func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int, 
 
 	return media_id, nil
 }
+
+func (db *appdbimpl) DeleteMedia(owner string, photo_id int, chat_id int) error {
+	_, err:= db.c.Exec("DELETE FROM media_chat WHERE (owner = ?, chat_id = ?, photo_id = ?)", owner, chat_id, photo_id)
+	if err != nil {	
+		return err
+	}
+
+	return nil
+}

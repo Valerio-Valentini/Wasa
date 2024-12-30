@@ -56,6 +56,6 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 	out.Close()
-	w.WriteHeader(...) //risposta
+	w.WriteHeader(http.StatusOk) //risposta
 
 }
