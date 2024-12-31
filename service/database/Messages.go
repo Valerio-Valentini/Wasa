@@ -39,13 +39,12 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 		return -1, nil
 	}
 
-	var id int
-	id, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
+	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
 	if err != nil {	
 		return -1, err
 	}
 
-	return id, nil
+	return 1, nil
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
