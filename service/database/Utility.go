@@ -88,17 +88,17 @@ func (db *appdbimpl) GetIdPhoto (user_id string) (int, error) {
 }
 
 func (db *appdbimpl) CreateNewMediaId (user_id string) (int, error) {
-	err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
+	_,err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO media_chat (user_id) VALUES(?)", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
