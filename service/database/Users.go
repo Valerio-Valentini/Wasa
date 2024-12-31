@@ -21,23 +21,23 @@ func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error) {
 		return -1, err
 	}
 	
-	photo_id, err := res.LastInsertId()
+	photo_id_db, err = res.LastInsertId()
 	if err != nil {	
 		return -1, err
 	}
 
 
-	return photo_id, nil
+	return photo_id_db, nil
 }
 
 func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 
-	res, err := VerifyUser(new_user_id)
+	res, err := db.VerifyUser(new_user_id)
 	if err != nil || res {	
 		return -1,err
 	}
 
-	_, err:= db.c.Exec("UPDATE users SET user_id = ? WHERE user_id = ?", new_user_id, user_id)
+	_, err = db.c.Exec("UPDATE users SET user_id = ? WHERE user_id = ?", new_user_id, user_id)
 	if err != nil {	
 		return err
 	}
@@ -46,7 +46,7 @@ func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 }
 
 func (db *appdbimpl) SearchUser(user_id string) ([]User, error) {
-	rows, err:= db.c.QueryRow("SELECT * FROM users WHERE user_id LIKE ? ", user_id + "%")
+	rows, err:= db.c.QueryRow("SELECT * FROM users WHERE user_id LIKE ? ", user_id + "%") //QUI
 	
 	if err != nil {
 		return nil, err

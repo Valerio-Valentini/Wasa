@@ -34,7 +34,7 @@ func (db *appdbimpl) DeleteReaction(owner string, message int) error {
 	}
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
-		return -1, err
+		return err
 	}
 	if !res{
 		return errors.New("User Is Not A Member")
@@ -56,7 +56,7 @@ func (db *appdbimpl) ChangeReaction(owner string, reaction string, message int) 
 	}
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
-		return -1, err
+		return err
 	}
 	if !res{
 		return errors.New("User Is Not A Member")
