@@ -34,7 +34,7 @@ func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 
 	res, err := db.VerifyUser(new_user_id)
 	if err != nil || res {	
-		return -1,err
+		return err
 	}
 
 	_, err = db.c.Exec("UPDATE users SET user_id = ? WHERE user_id = ?", new_user_id, user_id)

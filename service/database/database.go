@@ -51,7 +51,7 @@ type AppDatabase interface {
 	SendMessage(chat_id int, owner string, content string) (int64, error) //ok
 	DeleteMessage(owner string, chat_id int, message_id int) error //ok
 	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) //ok
-	ReplyMessage(owner string, reply int, content string) (int, error) //ok
+	ReplyMessage(owner string, reply int, content string) error //ok
 	DeleteMedia(user_id string, photo_id int, chat_id int) error //ok
 //----------------------------------------------------- Reactions_Functions
 	ChangeReaction(owner string, reaction string, message int) error //ok
