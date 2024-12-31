@@ -21,7 +21,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error){
 	return id_chat, nil
 }
 
-func (db *appdbimpl) AddMember(chat_id int, user_id string) error {
+func (db *appdbimpl) AddMember(chat_id int64, user_id string) error {
 	_, err:= db.c.Exec("INSERT INTO chat_members (chat_id, user_id) VALUES (?,?)", chat_id, user_id)
 	if err != nil {	
 		return err
@@ -56,9 +56,7 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 		if err != nil {
 			return nil, err
 		}
-		var current_row int
-		err:= db.c.QueryRow("SELECT chat_id FROM chat WHERE chat_id = ? ", chat_id).Scan(&current_row)
-		err := row.Scan(&chat.chat_id, &chat_group, &chat.chat_photo, &chat.chat_name)
+		err:= db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat_Group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
 			return nil, err
 		}
@@ -84,13 +82,13 @@ func (db *appdbimpl) UpdateGroupPhoto(chat_id int, photo_id int) (int, error) {
 		return -1, err
 	}
 	
-	photo_id, err := res.LastInsertId()
+	photo_id_db, err := res.LastInsertId()
 	if err != nil {	
 		return -1, err
 	}
 
 
-	return photo_id, nil
+	return photo_id_db, nil
 
 }
 
