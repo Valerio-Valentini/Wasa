@@ -87,7 +87,7 @@ func (db *appdbimpl) GetIdPhoto (user_id string) (int, error) {
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewMediaId (user_id string) (int, error) {
+func (db *appdbimpl) CreateNewMediaId (user_id string) (int64, error) {
 	_,err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
 	if err != nil {
 		return -1, err

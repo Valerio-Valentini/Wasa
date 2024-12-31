@@ -76,7 +76,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	var tables = [6]string{
+	var tables = [8]string{
 		`CREATE TABLE IF NOT EXISTS media_chat (
 		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
 		owner VARCHAR(16) NOT NULL,
