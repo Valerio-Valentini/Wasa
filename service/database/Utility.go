@@ -37,18 +37,18 @@ func (db *appdbimpl) GetIdProfilePicture (user_id string) (int, error) {
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewId (user_id string) (int, error) {
+func (db *appdbimpl) CreateNewId (user_id string) (int64, error) {
 	_,err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
 	if err != nil {
 		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
