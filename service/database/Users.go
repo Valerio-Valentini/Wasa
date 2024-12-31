@@ -21,7 +21,7 @@ func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error) {
 		return -1, err
 	}
 	
-	photo_id_db, err = res.LastInsertId()
+	photo_id_db, err := res.LastInsertId()
 	if err != nil {	
 		return -1, err
 	}
