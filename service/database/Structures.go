@@ -22,7 +22,7 @@ type Message struct {
 
 type ChangeUserId struct {
 	User_id string `json:"old_user_id"`
-	User_id string `json:"new_user_id"`
+	User_id_2 string `json:"new_user_id"`
 }
 
 type UserChatCombo struct {
@@ -39,7 +39,7 @@ type Reaction struct {
 type ForwardedMessage struct {
 	Message_id string `json:"message_id"`
 	Chat_id int `json:"first_chat_id"`
-	Chat_id int `json:"second_chat_id"`
+	Chat_id_2 int `json:"second_chat_id"`
 	Status string `json:"status"`
 	Date time.Time `json:"date"`
 	Content	string `json:"content"`

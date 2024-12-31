@@ -42,7 +42,7 @@ type AppDatabase interface {
 	StartChat(group bool, members []string) (int, error)  //ok
 	AddMember(chat_id int, user_id string) error //ok
 	LeaveChat(chat_id int, user_id string) error //ok
-    GetChats(user_id) ([]chat, error) //ok
+    GetChats(user_id string) ([]Chat, error) //ok
     UpdateGroupPhoto(chat_id int, photo_id int) (int, error) //ok
 	SetGroupName(user_id string, chat_id int, name string) error //ok
 //----------------------------------------------------- Messages_Functions
@@ -145,7 +145,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	for(i:=0; i<len(tables); i++) {
+	for i:=0; i<len(tables); i++ {
 		_, err = db.Exec(tables[i])
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
