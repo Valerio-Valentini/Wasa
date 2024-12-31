@@ -48,7 +48,7 @@ type AppDatabase interface {
 //----------------------------------------------------- Messages_Functions
 	GetMessagesFromChat(chat_id int) ([]Message, error) //ok
 	SendMedia(chat_id int, owner string, content string) (int, error) //ok
-	SendMessage(chat_id int, owner string, content string) (int, error) //ok
+	SendMessage(chat_id int, owner string, content string) (int64, error) //ok
 	DeleteMessage(owner string, chat_id int, message_id int) error //ok
 	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) //ok
 	ReplyMessage(owner string, reply int, content string) (int, error) //ok

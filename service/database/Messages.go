@@ -1,6 +1,6 @@
 package database
 
-func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int, error) {
+func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int64, error) {
 	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
 	if err != nil {	
 		return -1, err
@@ -28,21 +28,27 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 	if err != nil {	
 		return -1,err
 	}
+	if !res1{
+		return -1, nil
+	}
 	res2, err := db.VerifyUserIsMamberOfChat(owner, chat2_id)
 	if err != nil {	
 		return -1, err
 	}
+	if !res2{
+		return -1, nil
+	}
 
-	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
+	id, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
 	if err != nil {	
 		return -1, err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
-	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
+	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}
