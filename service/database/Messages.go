@@ -99,7 +99,7 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
 	return messages, nil
 }
 
-func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int, error) {
+func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int64, error) {
 	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
 	if err != nil {	
 		return -1, err
