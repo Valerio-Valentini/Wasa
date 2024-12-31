@@ -52,7 +52,8 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
-	chat_id, err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply)
+	var chat_id int
+	err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
 	if err != nil {	
 		return err
 	}
@@ -64,7 +65,7 @@ func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error
 		return errors.New("User Is Not A Member")
 	}
 
-	_, err:= db.c.Exec("INSERT INTO messages (owner, reply, content) VALUES (?,?,?)", owner, reply, content)
+	_, err = db.c.Exec("INSERT INTO messages (owner, reply, content) VALUES (?,?,?)", owner, reply, content)
 	if err != nil {	
 		return err
 	}
@@ -73,7 +74,8 @@ func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error
 }
 
 func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
-	rows, err:= db.c.QueryRow("SELECT * FROM messages WHERE chat_id = ? ", chat_id)
+	var rows Message
+	err:= db.c.QueryRow("SELECT * FROM messages WHERE chat_id = ? ", chat_id).Scan(&rows)  //QUI
 	
 	if err != nil {
 		return nil, err
@@ -99,7 +101,7 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
 }
 
 func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int, error) {
-	_, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
 	if err != nil {	
 		return -1, err
 	}
@@ -109,7 +111,7 @@ func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int, 
 		return -1, err
 	}
 
-	return media_id, nil
+	return message_id, nil
 }
 
 func (db *appdbimpl) DeleteMedia(owner string, photo_id int, chat_id int) error {
