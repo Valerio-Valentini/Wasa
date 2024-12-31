@@ -10,7 +10,7 @@ func (db *appdbimpl) InsertUser (username string) error {
 	return nil
 }
 
-func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int, error) {
+func (db *appdbimpl) ChangePhoto(user_id string, photo_id int) (int64, error) {
 	_, err:= db.c.Exec("DELETE FROM profile_photo WHERE photo_id = ? AND user_id = ?", photo_id, user_id)
 	if err != nil {	
 		return -1, err

@@ -58,7 +58,7 @@ type AppDatabase interface {
 	DeleteReaction(owner string, message int) error //ok
 	InsertReaction(owner string, reaction string, message int) error //ok
 //----------------------------------------------------- Users_Functions
-	ChangePhoto(user_id string, photo_id int) (int, error) //ok
+	ChangePhoto(user_id string, photo_id int) (int64, error) //ok
 	SearchUser(user_id string) ([]User, error) //ok
 	UpdateUser(user_id string, new_user_id string) error //ok
 	InsertUser(username string) error //ok
