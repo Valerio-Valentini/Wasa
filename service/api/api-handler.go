@@ -20,7 +20,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:user_id/chats/:chat_id", rt.wrap(rt.liveness)) 
 	rt.router.DELETE("/users/:user_id/chats/:chat_id", rt.wrap(rt.leaveChat)) //ok
 	//MESSAGE
-	rt.router.POST("/users/:user_id/chats/:chat_id/message/:message_id", rt.wrap(rt.sendMessage)) //ok
+	rt.router.POST("/users/:user_id/chats/:chat_id/message/:message_id", rt.wrap(rt.sendmessage)) //ok
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/message/:message_id", rt.wrap(rt.deleteMessage)) //ok
 	rt.router.PUT("/users/:user_id/chats/:chat_id/message/:message_id/reaction/:reaction_id", rt.wrap(rt.commentMessage)) //ok
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/message/:message_id/reaction/:reaction_id", rt.wrap(rt.deleteComment)) //ok
