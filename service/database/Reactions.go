@@ -2,13 +2,16 @@ package database
 
 func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) error {
 	var chat_id int
-	err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
+	err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", message).Scan(&chat_id)
 	if err != nil {	
 		return err
 	}
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
-		return -1, err
+		return err
+	}
+	if !res{
+		return errors.New("User Is Not A Member")
 	}
 
 	_, err:= db.c.Exec("INSERT INTO message_reactions (owner, reaction, message_id) VALUES (?,?,?)", owner, reaction, message)
