@@ -145,7 +145,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	for(i=0; i<len(tables); i++) {
+	for(i:=0; i<len(tables); i++) {
 		_, err = db.Exec(tables[i])
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
