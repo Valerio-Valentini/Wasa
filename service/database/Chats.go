@@ -56,7 +56,7 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 		if err != nil {
 			return nil, err
 		}
-		err:= db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat_Group, &chat.Chat_photo, &chat.Chat_name)
+		err:= db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
 			return nil, err
 		}
@@ -70,7 +70,7 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 	return chats, nil
 }
 
-func (db *appdbimpl) UpdateGroupPhoto(chat_id int, photo_id int) (int, error) {
+func (db *appdbimpl) UpdateGroupPhoto(chat_id int, photo_id int) (int64, error) {
 
 	_, err:= db.c.Exec("DELETE FROM group_photo WHERE photo_id = ? AND chat_id = ?", photo_id, chat_id)
 	if err != nil {	
@@ -94,12 +94,12 @@ func (db *appdbimpl) UpdateGroupPhoto(chat_id int, photo_id int) (int, error) {
 
 func (db *appdbimpl) SetGroupName(user_id string, chat_id int, name string) error {
 
-	res, err := VerifyUser(user_id)
+	res, err := db.VerifyUser(user_id)
 	if err != nil || res {	
 		return err
 	}
 
-	_, err:= db.c.Exec("UPDATE chat SET chat_name = ? WHERE chat_id = ?", name, chat_id)
+	_, err = db.c.Exec("UPDATE chat SET chat_name = ? WHERE chat_id = ?", name, chat_id)
 	if err != nil {	
 		return err
 	}

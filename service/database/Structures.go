@@ -52,6 +52,8 @@ type ForwardedMessage struct {
 type Chat struct {
 
 	Chat_id int `json:"first_chat_id"`
-
+	Chat_group bool
+	Chat_photo int
+	Chat_name string
 }
 

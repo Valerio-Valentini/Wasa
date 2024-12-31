@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int, error) {
-	_, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
 	if err != nil {	
 		return -1, err
 	}
@@ -24,16 +24,16 @@ func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) er
 }
 
 func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) {
-	res1, err := VerifyUserIsMamberOfChat(owner, chat1_id)
+	res1, err := db.VerifyUserIsMamberOfChat(owner, chat1_id)
 	if err != nil {	
 		return -1,err
 	}
-	res2, err := VerifyUserIsMamberOfChat(owner, chat2_id)
+	res2, err := db.VerifyUserIsMamberOfChat(owner, chat2_id)
 	if err != nil {	
 		return -1, err
 	}
 
-	_, err:= db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
+	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
 	if err != nil {	
 		return -1, err
 	}
