@@ -9,7 +9,7 @@ import (
 func (rt *_router) addMember(w http.ResponseWriter, r *http.Request, ps httprouter.Params){
 	w.Header().Set("Content-Type", "application/json")
 	var combo UserChatCombo
-	err := json.NewDecoder(r.Body).Decode(&user)
+	err := json.NewDecoder(r.Body).Decode(&combo)
 	if err != nil{
 		w.WriteHeader(http.StatusBadRequest)
 		return
