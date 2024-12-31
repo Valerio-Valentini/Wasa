@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var message Message
 	err := json.NewDecoder(r.Body).Decode(&user)

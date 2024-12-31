@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var reaction Reaction
 	err := json.NewDecoder(r.Body).Decode(&user)
