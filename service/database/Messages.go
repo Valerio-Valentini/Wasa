@@ -1,5 +1,9 @@
 package database
 
+import(
+	"errors"
+)
+
 func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int64, error) {
 	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
 	if err != nil {	
@@ -48,14 +52,21 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
+	chat_id, err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply)
+	if err != nil {	
+		return err
+	}
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
-		return -1, err
+		return err
+	}
+	if !res{
+		return errors.New("User Is Not A Member")
 	}
 
 	_, err:= db.c.Exec("INSERT INTO messages (owner, reply, content) VALUES (?,?,?)", owner, reply, content)
 	if err != nil {	
-		return -1, err
+		return err
 	}
 
 	return nil
