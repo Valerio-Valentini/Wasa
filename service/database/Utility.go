@@ -54,17 +54,17 @@ func (db *appdbimpl) CreateNewId (user_id string) (int64, error) {
 }
 
 func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int, error) {
-	err:= db.c.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
+	_,err:= db.c.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
