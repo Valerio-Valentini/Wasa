@@ -53,7 +53,7 @@ func (db *appdbimpl) CreateNewId (user_id string) (int64, error) {
 	return id, nil
 }
 
-func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int, error) {
+func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int64, error) {
 	_,err:= db.c.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
 	if err != nil {
 		return -1, err
@@ -73,7 +73,7 @@ func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM group_photo WHERE chat_id = ?", chat_id).Scan(&id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
@@ -82,7 +82,7 @@ func (db *appdbimpl) GetIdPhoto (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM media_chat WHERE user_id = ?", user_id).Scan(&id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
