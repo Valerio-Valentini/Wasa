@@ -12,7 +12,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error){
 	}
 	
 	for _,member := range members {
-		_, err:= db.AddMember(id_chat,member)
+		err:= db.AddMember(id_chat,member)
 		if err != nil {	
 			return -1, err
 		}

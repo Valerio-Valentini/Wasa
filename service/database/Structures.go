@@ -49,7 +49,7 @@ type ForwardedMessage struct {
 	Media int `json:"photo_id"`
 }
 
-type ForwardedMessage struct {
+type Chat struct {
 
 	Chat_id int `json:"first_chat_id"`
 
