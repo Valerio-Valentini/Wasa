@@ -1,7 +1,12 @@
 package database
 
 func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) error {
-	res, err := VerifyUserIsMamberOfChat(owner, chat_id)
+	var chat_id int
+	err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
+	if err != nil {	
+		return err
+	}
+	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {	
 		return -1, err
 	}

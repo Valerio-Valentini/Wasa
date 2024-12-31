@@ -74,8 +74,7 @@ func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error
 }
 
 func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
-	var rows Message
-	err:= db.c.QueryRow("SELECT * FROM messages WHERE chat_id = ? ", chat_id).Scan(&rows)  //QUI
+	rows, err:= db.c.QueryRow("SELECT * FROM messages WHERE chat_id = ? ", chat_id) //QUI
 	
 	if err != nil {
 		return nil, err
