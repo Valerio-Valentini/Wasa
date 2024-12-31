@@ -32,15 +32,15 @@ func (db *appdbimpl) GetIdProfilePicture (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
 
 func (db *appdbimpl) CreateNewId (user_id string) (int, error) {
-	err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
+	_,err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
 	if err != nil {
