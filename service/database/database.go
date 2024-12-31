@@ -39,7 +39,7 @@ import (
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 //----------------------------------------------------- Chats_Functions
-	StartChat(group bool, members []string) (int, error)  //ok
+	StartChat(group bool, members []string) (int64, error)  //ok
 	AddMember(chat_id int, user_id string) error //ok
 	LeaveChat(chat_id int, user_id string) error //ok
     GetChats(user_id string) ([]Chat, error) //ok

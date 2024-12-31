@@ -1,6 +1,6 @@
 package database
 
-func (db *appdbimpl) StartChat(group bool, members []string) (int, error){
+func (db *appdbimpl) StartChat(group bool, members []string) (int64, error){
 	res, err:= db.c.Exec("INSERT INTO chat (group) VALUES (?)", group)
 	if err != nil {	
 		return -1, err
@@ -12,7 +12,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int, error){
 	}
 	
 	for _,member := range members {
-		_, err:= AddMember(id_chat,member)
+		_, err:= db.AddMember(id_chat,member)
 		if err != nil {	
 			return -1, err
 		}
@@ -39,8 +39,8 @@ func (db *appdbimpl) LeaveChat(chat_id int, user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) GetChats(user_id) ([]chat, error) {
-	rows, err:= db.c.QueryRow("SELECT chat_id FROM chat_members WHERE user_id = ? ", user_id)
+func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
+	rows, err:= db.c.Query("SELECT chat_id FROM chat_members WHERE user_id = ? ", user_id)
 	
 	if err != nil {
 		return nil, err
@@ -56,7 +56,8 @@ func (db *appdbimpl) GetChats(user_id) ([]chat, error) {
 		if err != nil {
 			return nil, err
 		}
-		row, err:= db.c.QueryRow("SELECT chat_id FROM chat WHERE chat_id = ? ", chat_id)
+		var current_row int
+		err:= db.c.QueryRow("SELECT chat_id FROM chat WHERE chat_id = ? ", chat_id).Scan(&current_row)
 		err := row.Scan(&chat.chat_id, &chat_group, &chat.chat_photo, &chat.chat_name)
 		if err != nil {
 			return nil, err
