@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	aut := r.Header.Get("Authorization")
 	valori := strings.Split(aut, " ")
 	chat_id := valori[0]
