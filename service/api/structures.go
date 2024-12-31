@@ -26,7 +26,7 @@ type ChangeUserId struct {
 
 type UserChatCombo struct {
 	User_id string `json:"user_id"`
-	Chat_id int `json:"chat_id"`
+	Chat_id int64 `json:"chat_id"`
 }
 
 type Reaction struct {
