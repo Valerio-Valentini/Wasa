@@ -7,6 +7,8 @@ import (
 	"image/png"
 	"strings"
 	"io"
+	"bytes"
+	"os"
 )
 
 func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -22,7 +24,7 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 			return
 		}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
-	id, err := rt.db.GetIdPhoto(user_id)
+	id, err := rt.GetIdPhoto(user_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
@@ -37,5 +39,5 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	out.Close()
-	w.WriteHeader(http.StatusOk)
+	//w.WriteHeader(http.StatusOk)
 }
