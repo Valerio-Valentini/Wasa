@@ -12,14 +12,14 @@ func (rt *_router) addAMember(w http.ResponseWriter, r *http.Request, ps httprou
 	err := json.NewDecoder(r.Body).Decode(&combo)
 	if err != nil{
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return err
 	}
 
 	err = rt.db.AddMember(combo.Chat_id, combo.User_id)
 	if err != nil{
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
+			return err
 		}
 	return nil
 }
