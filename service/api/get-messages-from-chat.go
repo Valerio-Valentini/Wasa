@@ -16,7 +16,6 @@ func (rt *_router) getMessagesFromChat(w http.ResponseWriter, r *http.Request, p
 	}
 
 	messages,err := rt.db.GetMessagesFromChat(chat)
-	messages = 0 //???
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
