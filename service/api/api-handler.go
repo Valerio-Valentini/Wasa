@@ -24,7 +24,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/message/:message_id", rt.deleteMessage) //ok
 	rt.router.PUT("/users/:user_id/chats/:chat_id/message/:message_id/reaction/:reaction_id", rt.commentMessage) //ok
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/message/:message_id/reaction/:reaction_id", rt.deleteComment) //ok
-	rt.router.POST("/users/:user_id/chats/:chat_id/message/:message_id/forwarded/:message_id", rt.ForwardMessage) //ok
+	rt.router.POST("/users/:user_id/chats/:chat_id/message/:message_id/forwarded/:message_id", rt.forwardMessage) //ok
 	//MEDIA
 	rt.router.POST("/users/:user_id/chats/:chat_id/media/:media_id", rt.sendMedia) //ok
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/media/:media_id", rt.deleteMedia) //ok

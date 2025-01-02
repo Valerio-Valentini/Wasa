@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var message ForwardedMessage
 	err := json.NewDecoder(r.Body).Decode(&user)
