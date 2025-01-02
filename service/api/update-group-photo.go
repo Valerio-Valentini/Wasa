@@ -31,16 +31,15 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 			return
 		}
 	if (id == 0) {
-		id, err = rt.db.CreateNewPhotoId(chat_id)
+		id, err = rt.CreateNewPhotoId(chat_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
-		chat_id_string := strconv.Itoa(chat_id)
-		if _, err := os.Stat("./media/group_picture/" + chat_id_string); errors.Is(err, os.ErrNotExists) {
+		if _, err := os.Stat("./media/group_picture/" + chat_id); errors.Is(err, os.ErrNotExists) {
 			//creare cartella
-			_, err = os.MkDir("./media/group_picture/" + chat_id_string, os.ModeDir)
+			_, err = os.Mkdir("./media/group_picture/" + chat_id, os.ModeDir)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
@@ -50,9 +49,8 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 	}
 	
 	//creare file
-	chat_id_string := strconv.Itoa(chat_id)
 	id_string := strconv.Itoa(id)
-	out, err := os.Create("./media/group_picture/" + chat_id_string + "/" + chat_id_string)
+	out, err := os.Create("./media/group_picture/" + chat_id + "/" + chat_id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
