@@ -2,7 +2,7 @@ package api
 
 import (
 	"database/sql"
-
+	"jmoiron/sqlx"
 )
 
 var db *sqlx.DB
@@ -39,23 +39,23 @@ func (rt *_router) GetIdProfilePicture (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
-	return id, nil
+	return -1, nil
 }
 
 func (rt *_router) CreateNewId (user_id string) (int, error) {
 	err:= db.c.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
@@ -67,11 +67,11 @@ func (rt *_router) CreateNewPhotoId (chat_id string) (int, error) {
 	}
 	result, err:= db.c.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
@@ -89,7 +89,7 @@ func (rt *_router) GetIdPhoto (user_id string) (int, error) {
 	var id int
 	err:= db.c.QueryRow("SELECT photo_id FROM media_chat WHERE user_id = ?", user_id).Scan(&id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
@@ -97,15 +97,15 @@ func (rt *_router) GetIdPhoto (user_id string) (int, error) {
 func (rt *_router) CreateNewMediaId (user_id string) (int, error) {
 	err:= db.c.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	result, err:= db.c.Exec("INSERT INTO media_chat (user_id) VALUES(?)", user_id)
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 	return id, nil
 }
