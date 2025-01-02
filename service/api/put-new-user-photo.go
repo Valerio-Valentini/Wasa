@@ -3,6 +3,11 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"strings"
+	"io"
+	"bytes"
+	"os"
+	"strconv"
 )
 
 func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -14,21 +19,21 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
 	id, err := rt.db.GetIdProfilePicture(user_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 	if (id == 0) {
 		id, err = rt.db.CreateNewId(user_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
 		if _, err := os.Stat("./media/profile_picture/" + user_id); errors.Is(err, os.ErrNotExists) {
@@ -36,7 +41,7 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 			_, err = os.MkDir("./media/profile_picture/" + user_id, os.ModeDir)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 				return
 			}
 		}
@@ -46,13 +51,13 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 	out, err := os.Create("./media/profile_picture/" + user_id + "/" + id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
 	_,err = io.Copy(out, r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
 	out.Close()
