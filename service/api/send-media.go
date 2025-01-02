@@ -5,6 +5,12 @@ import (
 	"net/http"
 	"image/jpeg"
 	"image/png"
+	"strings"
+	"io"
+	"bytes"
+	"os"
+	"strconv"
+	"errors"
 )
 
 func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -28,7 +34,8 @@ func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprout
 		}
 	
 	//creare file
-	out, err := os.Create("./media/" + id)
+	id_string := strconv.Itoa(id)
+	out, err := os.Create("./media/" + id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		ctx.Logger.WithError(err).Error("Can't retrieve photo data")

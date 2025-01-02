@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"encoding/json"
 )
 
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -20,5 +21,5 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 			ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
-	return users, nil
+	return 
 }
