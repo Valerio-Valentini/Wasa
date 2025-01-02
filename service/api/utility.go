@@ -1,5 +1,12 @@
 package api
 
+import (
+	"database/sql"
+
+)
+
+var db *sqlx.DB
+
 func (rt *_router) VerifyUser (username string) (bool, error) {
 	var presence int
 	err:= db.c.QueryRow("SELECT 1 FROM users WHERE user_id = ? LIMIT 1 ", username).Scan(&presence)
