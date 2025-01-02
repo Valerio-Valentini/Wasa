@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"encoding/json"
 )
 
 func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -16,11 +17,11 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 	//verificare o creare funzione per la verifica dell'esistenza dell'utente
 	presence, err := rt.db.VerifyUser(user.User_id)
 	if(presence) {
-		w.WriteHeader(http.StatusOk)
+		//w.WriteHeader(http.StatusOk)
 		err = json.NewEncoder(w).Encode(user)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 		return
@@ -28,7 +29,7 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 	err = rt.db.InsertUser(user.User_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 	return
