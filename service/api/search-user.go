@@ -18,7 +18,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 	users,err := rt.db.SearchUser(user.User_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 	return 
