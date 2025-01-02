@@ -9,6 +9,7 @@ import (
 	"io"
 	"bytes"
 	"os"
+	 "strconv"
 )
 
 func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -32,7 +33,8 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	
 	//creare file
-	out, err := os.Remove("./media/" + id)
+	id_string := strconv.Itoa(id)
+	err = os.Remove("./media/" + id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
