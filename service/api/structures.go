@@ -8,7 +8,7 @@ type User struct {
 }
 
 type Message struct {
-	Message_id string `json:"message_id"`
+	Message_id int `json:"message_id"`
 	Chat_id int `json:"chat_id"`
 	Status string `json:"status"`
 	Date time.Time `json:"date"`
