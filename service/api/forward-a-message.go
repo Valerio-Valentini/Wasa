@@ -15,7 +15,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	message_id,err := rt.db.ForwardMessage(message.Owner, message.Chat_id, message.Content, message.Chat_id_2)
+	err = rt.db.ForwardMessage(message.Owner, message.Chat_id, message.Content, message.Chat_id_2)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")

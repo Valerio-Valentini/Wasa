@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"encoding/json"
 )
 
 func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -14,11 +15,11 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	chats,err := rt.db.GetChats(user.User_id)
+	err = rt.db.GetChats(user.User_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
-	return chats, nil
+	return
 }
