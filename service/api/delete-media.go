@@ -9,7 +9,7 @@ import (
 	"io"
 	"bytes"
 	"os"
-	 "strconv"
+	"strconv"
 )
 
 func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -40,6 +40,6 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
-	out.Close()
+	//out.Close()
 	//w.WriteHeader(http.StatusOk)
 }
