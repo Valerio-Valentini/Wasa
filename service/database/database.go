@@ -41,7 +41,7 @@ type AppDatabase interface {
 //----------------------------------------------------- Chats_Functions
 	StartChat(group bool, members []string) (int64, error)  //ok
 	AddMember(chat_id int64, user_id string) error //ok
-	LeaveChat(chat_id int, user_id string) error //ok
+	LeaveChat(chat_id int64, user_id string) error //ok
     GetChats(user_id string) ([]Chat, error) //ok
     UpdateGroupPhoto(chat_id int, photo_id int) (int64, error) //ok
 	SetGroupName(user_id string, chat_id int, name string) error //ok
