@@ -2,10 +2,9 @@ package api
 
 import (
 	"database/sql"
-	"jmoiron/sqlx"
 )
 
-var db *sqlx.DB
+
 
 func (rt *_router) VerifyUser (username string) (bool, error) {
 	var presence int
