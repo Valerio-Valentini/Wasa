@@ -32,14 +32,15 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 		}
 	if (id == 0) {
 		id, err = rt.CreateNewId(user_id)
+		user_id_string := strconv.Itoa(user_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
-		if _, err := os.Stat("./media/profile_picture/" + user_id); errors.Is(err, os.IsNotExists) {
+		if _, err := os.Stat("./media/profile_picture/" + user_id_string); errors.Is(err, os.ErrNotExists) {
 			//creare cartella
-			_, err = os.Mkdir("./media/profile_picture/" + user_id, os.ModeDir)
+			err = os.Mkdir("./media/profile_picture/" + user_id_string, os.ModeDir)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
@@ -49,7 +50,8 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 	}
 	
 	//creare file
-	out, err := os.Create("./media/profile_picture/" + user_id + "/" + id)
+	id_string := strconv.Itoa(id)
+	out, err := os.Create("./media/profile_picture/" + user_id_string + "/" + id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
@@ -62,6 +64,6 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 	out.Close()
-	w.WriteHeader(http.StatusOk) //risposta
+	//w.WriteHeader(http.StatusOk) //risposta
 
 }
