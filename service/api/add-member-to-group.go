@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 )
 
-func (rt *_router) addMember(w http.ResponseWriter, r *http.Request, ps httprouter.Params) error{
+func (rt *_router) addAMember(w http.ResponseWriter, r *http.Request, ps httprouter.Params) error{
 	w.Header().Set("Content-Type", "application/json")
 	var combo UserChatCombo
 	err := json.NewDecoder(r.Body).Decode(&combo)
