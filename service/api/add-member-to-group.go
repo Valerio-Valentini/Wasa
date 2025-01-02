@@ -21,5 +21,5 @@ func (rt *_router) addAMember(w http.ResponseWriter, r *http.Request, ps httprou
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return 
 		}
-	return nil
+	return 
 }
