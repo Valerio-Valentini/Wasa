@@ -26,7 +26,7 @@ func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprout
 			return
 		}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
-	id, err := rt.db.GetIdPhoto(user_id)
+	id, err := rt.GetIdPhoto(user_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
@@ -48,5 +48,5 @@ func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 	out.Close()
-	w.WriteHeader(http.StatusOk)
+	//w.WriteHeader(http.StatusOk)
 }

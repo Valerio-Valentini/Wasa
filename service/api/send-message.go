@@ -3,12 +3,14 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"encoding/json"
+	"ctx"
 )
 
 func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var message Message
-	err := json.NewDecoder(r.Body).Decode(&user)
+	err := json.NewDecoder(r.Body).Decode(&message)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -20,5 +22,5 @@ func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httpro
 			ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
-	return message_id, nil
+	return
 }
