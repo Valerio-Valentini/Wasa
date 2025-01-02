@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"encoding/json"
 )
 
 func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -14,10 +15,10 @@ func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
-	err := rt.db.UpdateUser(user.old_user_id, user.new_user_id)
+	err = rt.db.UpdateUser(user.User_id, user.User_id_2)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("session: can't create response json")
+		//ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 	return

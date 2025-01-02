@@ -30,7 +30,7 @@ func (db *appdbimpl) AddMember(chat_id int64, user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) LeaveChat(chat_id int, user_id string) error {
+func (db *appdbimpl) LeaveChat(chat_id int64, user_id string) error {
 	_, err:= db.c.Exec("DELETE FROM chat_members WHERE (user_id = ? AND chat_id = ?)", user_id, chat_id)
 	if err != nil {	
 		return err

@@ -15,7 +15,8 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	err = rt.db.GetChats(user.User_id)
+	chats, err := rt.db.GetChats(user.User_id)
+	chats = 0 //???
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
