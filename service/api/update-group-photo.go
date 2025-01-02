@@ -3,6 +3,12 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"strings"
+	"io"
+	"bytes"
+	"os"
+	"strconv"
+	"errors"
 )
 
 func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -14,48 +20,51 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
-	id, err := rt.db.GetIdGroupPicture(chat_id)
+	id, err := rt.GetIdGroupPicture(chat_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("session: can't create response json")
+			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 	if (id == 0) {
 		id, err = rt.db.CreateNewPhotoId(chat_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
-		if _, err := os.Stat("./media/group_picture/" + chat_id); errors.Is(err, os.ErrNotExists) {
+		chat_id_string := strconv.Itoa(chat_id)
+		if _, err := os.Stat("./media/group_picture/" + chat_id_string); errors.Is(err, os.ErrNotExists) {
 			//creare cartella
-			_, err = os.MkDir("./media/group_picture/" + chat_id, os.ModeDir)
+			_, err = os.MkDir("./media/group_picture/" + chat_id_string, os.ModeDir)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 				return
 			}
 		}
 	}
 	
 	//creare file
-	out, err := os.Create("./media/group_picture/" + chat_id + "/" + id)
+	chat_id_string := strconv.Itoa(chat_id)
+	id_string := strconv.Itoa(id)
+	out, err := os.Create("./media/group_picture/" + chat_id_string + "/" + chat_id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
 	_,err = io.Copy(out, r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
 	out.Close()
-	w.WriteHeader(http.StatusOk) 
+	//w.WriteHeader(http.StatusOk) 
 
 }
