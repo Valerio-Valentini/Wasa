@@ -15,7 +15,7 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	err := rt.db.InsertReaction(reaction.Owner, reaction.Reaction, reaction.Message_id)
+	err = rt.db.InsertReaction(reaction.Owner, reaction.Reaction, reaction.Message_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")

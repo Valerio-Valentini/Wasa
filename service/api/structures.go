@@ -30,7 +30,7 @@ type UserChatCombo struct {
 }
 
 type Reaction struct {
-	Message_id string `json:"message_id"`
+	Message_id int `json:"message_id"`
 	Owner string `json:"user_id"`
 	Reaction string `json:"reaction"`
 }

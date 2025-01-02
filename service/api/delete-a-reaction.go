@@ -15,7 +15,7 @@ func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	err := rt.db.DeleteReaction(reaction.Owner, reaction.Message_id)
+	err = rt.db.DeleteReaction(reaction.Owner, reaction.Message_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")

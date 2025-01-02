@@ -15,7 +15,7 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	err := rt.db.DeleteMessage(message.Owner, message.Chat_id, message.Message_id)
+	err = rt.db.DeleteMessage(message.Owner, message.Chat_id, message.Message_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
