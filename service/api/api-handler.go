@@ -30,8 +30,6 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:user_id/chats/:chat_id/media/:media_id", rt.deleteMedia) //ok
 	//LOGIN
 	rt.router.POST("/session", rt.session) //ok
-	// Special routes
-	rt.router.GET("/liveness", rt.liveness) //ok
 
 	return rt.router
 }

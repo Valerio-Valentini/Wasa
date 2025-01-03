@@ -37,7 +37,8 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
-		if _, err := os.Stat("./media/profile_picture/" + user_id); errors.Is(err, os.ErrNotExists) {
+		 _, err := os.Stat("./media/profile_picture/" + user_id)
+		 if os.IsNotExists(err) {
 			//creare cartella
 			err = os.Mkdir("./media/profile_picture/" + user_id, os.ModeDir)
 			if err != nil {
@@ -45,7 +46,7 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 				return
 			}
-		}
+		 }	
 	}
 	
 	//creare file
