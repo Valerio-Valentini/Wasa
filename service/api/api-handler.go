@@ -17,7 +17,7 @@ func (rt *_router) Handler() http.Handler {
 	//GROUP
 	rt.router.PUT("/users/:user_id/chats/:chat_id/photo", rt.putNewGroupPhoto) //ok
 	rt.router.PUT("/users/:user_id/chats/:chat_id/members/:member_id", rt.addAMember) //ok
-	rt.router.PUT("/users/:user_id/chats/:chat_id", rt.liveness) 
+	rt.router.PUT("/users/:user_id/chats/:chat_id", rt.putNewGroupPhoto) //FAI FUNZIONE
 	rt.router.DELETE("/users/:user_id/chats/:chat_id", rt.leaveChat) //ok
 	//MESSAGE
 	rt.router.POST("/users/:user_id/chats/:chat_id/message/:message_id", rt.sendmessage) //ok

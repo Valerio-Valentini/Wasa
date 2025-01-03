@@ -38,7 +38,7 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 			return
 		}
 		 _, err := os.Stat("./media/profile_picture/" + user_id)
-		 if os.IsNotExists(err) {
+		 if os.IsNotExist(err) {
 			//creare cartella
 			err = os.Mkdir("./media/profile_picture/" + user_id, os.ModeDir)
 			if err != nil {
