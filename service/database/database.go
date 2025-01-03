@@ -63,6 +63,13 @@ type AppDatabase interface {
 	UpdateUser(user_id string, new_user_id string) error //ok
 	InsertUser(username string) error //ok
 	VerifyUser(username string) (bool,error) //ok
+	VerifyUserIsMamberOfChat(user_id string, chat_id int) (bool, error)
+	GetIdProfilePicture(user_id string) (int, error)
+	CreateNewId(user_id string) (int64, error)
+	CreateNewPhotoId(chat_id string) (int64, error)
+	GetIdPhoto(user_id string) (int, error)
+	GetIdGroupPicture(chat_id string) (int, error)
+	CreateNewMediaId(user_id string) (int64, error)
 }
 
 type appdbimpl struct {
