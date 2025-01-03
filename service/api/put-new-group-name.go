@@ -9,7 +9,7 @@ import (
 func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var values NameChat
-	err := json.NewDecoder(r.Body).Decode(&name)
+	err := json.NewDecoder(r.Body).Decode(&values)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
