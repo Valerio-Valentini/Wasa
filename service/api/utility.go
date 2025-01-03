@@ -48,7 +48,7 @@ func (rt *_router) CreateNewId (user_id string) (int64, error) {
 	return id, nil
 }
 
-func (rt *_router) CreateNewPhotoId (chat_id string) (int, error) {
+func (rt *_router) CreateNewPhotoId (chat_id string) (int64, error) {
 	id, err:= rt.db.CreateNewPhotoId (chat_id)
 	if err != nil {
 		return -1, err
