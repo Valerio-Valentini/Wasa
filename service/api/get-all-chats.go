@@ -22,5 +22,5 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 			return
 		}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(chats)
+	_ =json.NewEncoder(w).Encode(chats)
 }
