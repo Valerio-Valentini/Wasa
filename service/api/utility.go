@@ -56,7 +56,7 @@ func (rt *_router) CreateNewPhotoId (chat_id string) (int64, error) {
 	return id, nil
 }
 
-func (rt *_router) GetIdGroupPicture (chat_id string) (int, error) {
+func (rt *_router) GetIdGroupPicture (chat_id string) (int64, error) {
 	id, err:= rt.db.GetIdGroupPicture (chat_id)
 	if err != nil {
 		return nil, err

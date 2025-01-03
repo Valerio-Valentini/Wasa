@@ -68,7 +68,7 @@ type AppDatabase interface {
 	CreateNewId(user_id string) (int64, error)
 	CreateNewPhotoId(chat_id string) (int64, error)
 	GetIdPhoto(user_id string) (int, error)
-	GetIdGroupPicture(chat_id string) (int, error)
+	GetIdGroupPicture(chat_id string) (int64, error)
 	CreateNewMediaId(user_id string) (int64, error)
 }
 
