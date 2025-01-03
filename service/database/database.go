@@ -128,7 +128,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		chat_id  INTEGER NOT NULL,
 		status VARCHAR(16),
-		date DATETIME DEFAULT CURRENT_TIME_STAMP;
+		date DATETIME DEFAULT CURRENT_TIME_STAMP,
 		owner VARCHAR(16) NOT NULL,
 		forwarded BOOLEAN NOT NULL,
 		reply INTEGER,
