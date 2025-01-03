@@ -71,8 +71,8 @@ func (db *appdbimpl) CreateNewPhotoId (chat_id string) (int64, error) {
 	return id, nil
 }
 
-func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int, error) {
-	var id int
+func (db *appdbimpl) GetIdGroupPicture (chat_id string) (int64, error) {
+	var id int64
 	err:= db.c.QueryRow("SELECT photo_id FROM group_photo WHERE chat_id = ?", chat_id).Scan(&id)
 	if err != nil {
 		return -1, err
