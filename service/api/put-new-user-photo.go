@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"os"
 	"strconv"
-	"errors"
 )
 
 func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
