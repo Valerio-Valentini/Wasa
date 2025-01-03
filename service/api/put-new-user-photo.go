@@ -49,7 +49,9 @@ func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps ht
 	}
 	
 	//creare file
-	id_string := strconv.Itoa(id)
+	var int_id int
+	int_id
+	id_string := strconv.FormatInt(id)
 	out, err := os.Create("./media/profile_picture/" + user_id + "/" + id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
