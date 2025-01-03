@@ -15,7 +15,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users/:user_id/chats", rt.getAllChats) //ok
 	rt.router.GET("/users/:user_id/chats/:chat_id", rt.getMessagesFromChat) //ok
 	//GROUP
-	rt.router.PUT("/users/:user_id/chats/:chat_id/photo", rt.liveness) //ok
+	rt.router.PUT("/users/:user_id/chats/:chat_id/photo", rt.putNewGroupPhoto) //ok
 	rt.router.PUT("/users/:user_id/chats/:chat_id/members/:member_id", rt.addAMember) //ok
 	rt.router.PUT("/users/:user_id/chats/:chat_id", rt.liveness) 
 	rt.router.DELETE("/users/:user_id/chats/:chat_id", rt.leaveChat) //ok
