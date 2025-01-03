@@ -32,7 +32,7 @@ func (rt *_router) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool,
 	return res, nil
 }
 
-func (rt *_router) GetIdProfilePicture (user_id string) (int, error) {
+func (rt *_router) GetIdProfilePicture (user_id string) (int64, error) {
 	id, err:= rt.db.GetIdProfilePicture (user_id)
 	if err != nil {
 		return -1, err

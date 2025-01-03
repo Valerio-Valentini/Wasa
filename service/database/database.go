@@ -64,7 +64,7 @@ type AppDatabase interface {
 	InsertUser(username string) error //ok
 	VerifyUser(username string) (bool,error) //ok
 	VerifyUserIsMamberOfChat(user_id string, chat_id int) (bool, error)
-	GetIdProfilePicture(user_id string) (int, error)
+	GetIdProfilePicture(user_id string) (int64, error)
 	CreateNewId(user_id string) (int64, error)
 	CreateNewPhotoId(chat_id string) (int64, error)
 	GetIdPhoto(user_id string) (int, error)
