@@ -7,8 +7,7 @@ import (
 
 
 func (rt *_router) VerifyUser (username string) (bool, error) {
-	var presence int
-	err:= rt.db.QueryRow("SELECT 1 FROM users WHERE user_id = ? LIMIT 1 ", username).Scan(&presence)
+	res, err:= rt.db.VerifyUser(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -17,7 +16,7 @@ func (rt *_router) VerifyUser (username string) (bool, error) {
 		return false, err
 	}
 
-	return true, nil
+	return res, nil
 }
 
 func (rt *_router) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool, error) {
