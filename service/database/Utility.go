@@ -31,7 +31,7 @@ func (db *appdbimpl) VerifyUserIsMamberOfChat (user_id string, chat_id int) (boo
 }
 
 func (db *appdbimpl) GetIdProfilePicture (user_id string) (int64, error) {
-	var id int
+	var id int64
 	err:= db.c.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
 	if err != nil {
 		return -1, err
