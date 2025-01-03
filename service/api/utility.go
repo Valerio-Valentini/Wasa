@@ -20,8 +20,7 @@ func (rt *_router) VerifyUser (username string) (bool, error) {
 }
 
 func (rt *_router) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool, error) {
-	var presence int
-	err:= rt.db.QueryRow("SELECT 1 FROM users WHERE user_id = ? AND chat_id = ? LIMIT 1 ", user_id, chat_id).Scan(&presence)
+	res, err:= rt.db.VerifyUserIsMamberOfChat (user_id, chat_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -30,28 +29,19 @@ func (rt *_router) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool,
 		return false, err
 	}
 
-	return true, nil
+	return res, nil
 }
 
 func (rt *_router) GetIdProfilePicture (user_id string) (int, error) {
-	var id int
-	err:= rt.db.QueryRow("SELECT photo_id FROM profile_photo WHERE user_id = ?", user_id).Scan(&id)
+	id, err:= rt.db.GetIdProfilePicture (user_id)
 	if err != nil {
 		return -1, err
 	}
-	return -1, nil
+	return id, nil
 }
 
 func (rt *_router) CreateNewId (user_id string) (int, error) {
-	err:= rt.db.Exec("DELETE FROM profile_photo WHERE user_id = ?", user_id)
-	if err != nil {
-		return -1, err
-	}
-	result, err:= rt.db.Exec("INSERT INTO profile_photo (user_id) VALUES(?)", user_id)
-	if err != nil {
-		return -1, err
-	}
-	id, err := result.LastInsertId()
+	id, err:= rt.db.CreateNewId (user_id)
 	if err != nil {
 		return -1, err
 	}
@@ -59,15 +49,7 @@ func (rt *_router) CreateNewId (user_id string) (int, error) {
 }
 
 func (rt *_router) CreateNewPhotoId (chat_id string) (int, error) {
-	err:= rt.db.Exec("DELETE FROM group_photo WHERE chat_id = ?", chat_id)
-	if err != nil {
-		return nil, err
-	}
-	result, err:= rt.db.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
-	if err != nil {
-		return -1, err
-	}
-	id, err := result.LastInsertId()
+	id, err:= rt.db.CreateNewPhotoId (chat_id)
 	if err != nil {
 		return -1, err
 	}
@@ -75,8 +57,7 @@ func (rt *_router) CreateNewPhotoId (chat_id string) (int, error) {
 }
 
 func (rt *_router) GetIdGroupPicture (chat_id string) (int, error) {
-	var id int
-	err:= rt.db.QueryRow("SELECT photo_id FROM group_photo WHERE chat_id = ?", chat_id).Scan(&id)
+	id, err:= rt.db.GetIdGroupPicture (chat_id)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +65,7 @@ func (rt *_router) GetIdGroupPicture (chat_id string) (int, error) {
 }
 
 func (rt *_router) GetIdPhoto (user_id string) (int, error) {
-	var id int
-	err:= rt.db.QueryRow("SELECT photo_id FROM media_chat WHERE user_id = ?", user_id).Scan(&id)
+	id, err:= rt.db.GetIdPhoto (user_id)
 	if err != nil {
 		return -1, err
 	}
@@ -93,15 +73,7 @@ func (rt *_router) GetIdPhoto (user_id string) (int, error) {
 }
 
 func (rt *_router) CreateNewMediaId (user_id string) (int, error) {
-	err:= rt.db.Exec("DELETE FROM media_chat WHERE user_id = ?", user_id)
-	if err != nil {
-		return -1, err
-	}
-	result, err:= rt.db.Exec("INSERT INTO media_chat (user_id) VALUES(?)", user_id)
-	if err != nil {
-		return -1, err
-	}
-	id, err := result.LastInsertId()
+	id, err:= rt.db.CreateNewMediaId (user_id)
 	if err != nil {
 		return -1, err
 	}
