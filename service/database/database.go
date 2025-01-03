@@ -111,6 +111,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 		`CREATE TABLE IF NOT EXISTS chat (
 		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		is_group BOOLEAN NOT NULL,
 		chat_photo INTEGER NOT NULL,
 		chat_name VARCHAR(16),
 		FOREIGN KEY(chat_photo) REFERENCES media_chat (photo_id)
