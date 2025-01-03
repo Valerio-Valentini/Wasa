@@ -30,7 +30,7 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 			return
 		}
 	if (id == 0) {
-		id, err := rt.CreateNewPhotoId(chat_id)
+		id, err = rt.CreateNewPhotoId(chat_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
