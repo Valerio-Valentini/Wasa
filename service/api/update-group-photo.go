@@ -37,7 +37,8 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
-		if _, err := os.Stat("./media/group_picture/" + chat_id); errors.Is(err, os.ErrNotExists) {
+		_, err := os.Stat("./media/group_picture/" + chat_id)
+		if os.IsNotExist(err) {
 			//creare cartella
 			err = os.Mkdir("./media/group_picture/" + chat_id, os.ModeDir)
 			if err != nil {
@@ -45,6 +46,7 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 				//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 				return
 			}
+			
 		}
 	}
 	

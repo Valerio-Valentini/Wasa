@@ -21,5 +21,6 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
-	return 
+		w.WriteHeader(http.StatusOK)
+		_ =json.NewEncoder(w).Encode(users)
 }
