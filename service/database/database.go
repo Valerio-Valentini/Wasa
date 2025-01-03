@@ -118,7 +118,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat_members (
-		user_id VARCHAR(16) NOT NUL,
+		user_id VARCHAR(16) NOT NULL,
 		chat_id  INTEGER NOT NULL,
 		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
 		FOREIGN KEY(user_id) REFERENCES users (user_id)

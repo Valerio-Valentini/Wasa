@@ -1,7 +1,7 @@
 package database
 
 func (db *appdbimpl) StartChat(group bool, members []string) (int64, error){
-	res, err:= db.c.Exec("INSERT INTO chat (group) VALUES (?)", group)
+	res, err:= db.c.Exec("INSERT INTO chat (is_group) VALUES (?)", group)
 	if err != nil {	
 		return -1, err
 	}
