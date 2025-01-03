@@ -45,5 +45,5 @@ func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 	out.Close()
-	//w.WriteHeader(http.StatusOk)
+	w.WriteHeader(http.StatusOK)
 }
