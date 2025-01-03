@@ -3,14 +3,11 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"image/jpeg"
-	"image/png"
 	"strings"
 	"io"
 	"bytes"
 	"os"
 	"strconv"
-	"errors"
 )
 
 func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

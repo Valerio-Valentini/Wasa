@@ -3,8 +3,6 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"image/jpeg"
-	"image/png"
 	"strings"
 	"io"
 	"bytes"
