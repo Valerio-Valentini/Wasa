@@ -83,7 +83,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	var tables = [8]string{
+	var tables = [9]string{
 		`CREATE TABLE IF NOT EXISTS media_chat (
 		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
 		owner VARCHAR(16) NOT NULL,
@@ -106,7 +106,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		`CREATE TABLE IF NOT EXISTS users (
 		user_id VARCHAR(16) NOT NULL PRIMARY KEY,
 		photo_id INTEGER NOT NULL,
-		FOREIGN KEY(photo_id) REFERENCES media (photo_id)
+		FOREIGN KEY(photo_id) REFERENCES profile_photo (photo_id)
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat (
@@ -148,6 +148,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 		FOREIGN KEY(message_id) REFERENCES message (message_id),
 		PRIMARY KEY(owner, message_id)
 		);`,
+
+		`INSERT INTO profile_photo (photo_id, owner) VALUES (0, 0);`,
 
 	}
 
