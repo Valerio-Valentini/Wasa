@@ -21,5 +21,4 @@ func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps
 		//ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
-	return
 }

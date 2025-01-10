@@ -19,25 +19,25 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+			// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 			return
 		}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
 	id, err := rt.GetIdPhoto(user_id)
 	if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			//ctx.Logger.WithError(err).Error("session: can't create response json")
+			// ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
 	
-	//creare file
+	// creare file
 	id_string := strconv.Itoa(id)
 	err = os.Remove("./media/" + id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		//ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
 		return
 	}
-	//out.Close()
-	//w.WriteHeader(http.StatusOk)
+	// out.Close()
+	// w.WriteHeader(http.StatusOk)
 }

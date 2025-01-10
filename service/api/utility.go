@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 )
 
 
@@ -9,7 +10,7 @@ import (
 func (rt *_router) VerifyUser (username string) (bool, error) {
 	res, err:= rt.db.VerifyUser(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil
 		}
 		
@@ -22,7 +23,7 @@ func (rt *_router) VerifyUser (username string) (bool, error) {
 func (rt *_router) VerifyUserIsMamberOfChat (user_id string, chat_id int) (bool, error) {
 	res, err:= rt.db.VerifyUserIsMamberOfChat (user_id, chat_id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil
 		}
 		

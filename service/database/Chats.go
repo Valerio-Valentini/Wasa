@@ -12,7 +12,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error){
 	}
 	
 	for _,member := range members {
-		err:= db.AddMember(id_chat,member)
+		err = db.AddMember(id_chat,member)
 		if err != nil {	
 			return -1, err
 		}
@@ -56,7 +56,7 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 		if err != nil {
 			return nil, err
 		}
-		err:= db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
+		err= db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
 			return nil, err
 		}

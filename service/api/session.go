@@ -35,6 +35,5 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 			//ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
 		}
-	return
 	
 }

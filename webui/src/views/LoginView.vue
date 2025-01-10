@@ -35,10 +35,12 @@ export default {
             </div>
         </div>
         <div class="row">
-            <div class="col-5">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Insert Username" v-model="username">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="login">Login</button >
+            <div class="d-flex justify-content-center">
+                <div class="col-5">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Insert Username" v-model="username">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" @click="login">Login</button >
+                    </div>
                 </div>
             </div>
         </div>

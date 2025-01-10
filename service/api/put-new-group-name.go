@@ -21,5 +21,4 @@ func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps ht
 		//ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
-	return
 }
