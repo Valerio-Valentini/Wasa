@@ -1,17 +1,17 @@
 package database
 
-import(
+import (
 	"errors"
 )
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int64, error) {
-	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
-	if err != nil {	
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+	if err != nil {
 		return -1, err
 	}
 
 	message_id, err := res.LastInsertId()
-	if err != nil {	
+	if err != nil {
 		return -1, err
 	}
 
@@ -19,8 +19,8 @@ func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int
 }
 
 func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) error {
-	_, err:= db.c.Exec("DELETE FROM messages WHERE (owner = ?, chat_id = ?, message_id = ?)", owner, chat_id, message_id)
-	if err != nil {	
+	_, err := db.c.Exec("DELETE FROM messages WHERE (owner = ?, chat_id = ?, message_id = ?)", owner, chat_id, message_id)
+	if err != nil {
 		return err
 	}
 
@@ -29,22 +29,22 @@ func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) er
 
 func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) {
 	res1, err := db.VerifyUserIsMamberOfChat(owner, chat1_id)
-	if err != nil {	
-		return -1,err
+	if err != nil {
+		return -1, err
 	}
-	if !res1{
+	if !res1 {
 		return -1, nil
 	}
 	res2, err := db.VerifyUserIsMamberOfChat(owner, chat2_id)
-	if err != nil {	
+	if err != nil {
 		return -1, err
 	}
-	if !res2{
+	if !res2 {
 		return -1, nil
 	}
 
 	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
-	if err != nil {	
+	if err != nil {
 		return -1, err
 	}
 
@@ -53,20 +53,20 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, 
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
 	var chat_id int
-	err:= db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
-	if err != nil {	
+	err := db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
+	if err != nil {
 		return err
 	}
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
-	if err != nil {	
+	if err != nil {
 		return err
 	}
-	if !res{
+	if !res {
 		return errors.New("User Is Not A Member")
 	}
 
 	_, err = db.c.Exec("INSERT INTO messages (owner, reply, content) VALUES (?,?,?)", owner, reply, content)
-	if err != nil {	
+	if err != nil {
 		return err
 	}
 
@@ -74,8 +74,8 @@ func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error
 }
 
 func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
-	rows, err:= db.c.Query("SELECT * FROM messages WHERE chat_id = ? ", chat_id)
-	
+	rows, err := db.c.Query("SELECT * FROM messages WHERE chat_id = ? ", chat_id)
+
 	if err != nil {
 		return nil, err
 	}
@@ -100,13 +100,13 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id int) ([]Message, error) {
 }
 
 func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int64, error) {
-	res, err:= db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
-	if err != nil {	
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+	if err != nil {
 		return -1, err
 	}
 
 	message_id, err := res.LastInsertId()
-	if err != nil {	
+	if err != nil {
 		return -1, err
 	}
 
@@ -114,8 +114,8 @@ func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int64
 }
 
 func (db *appdbimpl) DeleteMedia(owner string, photo_id int, chat_id int) error {
-	_, err:= db.c.Exec("DELETE FROM media_chat WHERE (owner = ?, chat_id = ?, photo_id = ?)", owner, chat_id, photo_id)
-	if err != nil {	
+	_, err := db.c.Exec("DELETE FROM media_chat WHERE (owner = ?, chat_id = ?, photo_id = ?)", owner, chat_id, photo_id)
+	if err != nil {
 		return err
 	}
 

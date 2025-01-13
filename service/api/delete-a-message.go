@@ -1,10 +1,10 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
-)	
+)
 
 func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
@@ -17,8 +17,8 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 
 	err = rt.db.DeleteMessage(message.Owner, message.Chat_id, message.Message_id)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			// ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
 }

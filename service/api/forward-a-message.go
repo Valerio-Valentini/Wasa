@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -17,10 +17,10 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 
 	id, err := rt.db.ForwardMessage(message.Owner, message.Chat_id, message.Content, message.Chat_id_2)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			//ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	_ =json.NewEncoder(w).Encode(id)
+	_ = json.NewEncoder(w).Encode(id)
 }

@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -15,12 +15,12 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	users,err := rt.db.SearchUser(user.User_id)
+	users, err := rt.db.SearchUser(user.User_id)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			//ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		_ =json.NewEncoder(w).Encode(users)
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(users)
 }

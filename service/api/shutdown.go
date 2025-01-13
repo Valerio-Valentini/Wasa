@@ -1,5 +1,5 @@
 package api
 
-func (rt*_router) Close() error {
+func (rt *_router) Close() error {
 	return nil
 }

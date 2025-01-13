@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"strings"
-	"io"
 	"bytes"
+	"github.com/julienschmidt/httprouter"
+	"io"
+	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -18,18 +18,18 @@ func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httpro
 	w.Header().Set("Content-Type", "application/json")
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
 	r.Body = io.NopCloser(bytes.NewBuffer(data))
 	id, err := rt.GetIdPhoto(user_id)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			// ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
-		}
-	
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
+
 	// creare file
 	id_string := strconv.Itoa(id)
 	err = os.Remove("./media/" + id_string)

@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"encoding/json"
 )
 
 func (rt *_router) leaveChat(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -17,8 +17,8 @@ func (rt *_router) leaveChat(w http.ResponseWriter, r *http.Request, ps httprout
 
 	err = rt.db.LeaveChat(combo.Chat_id, combo.User_id)
 	if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			//ctx.Logger.WithError(err).Error("session: can't create response json")
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
 }
