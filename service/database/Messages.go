@@ -4,8 +4,10 @@ import (
 	"errors"
 )
 
-func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int64, error) {
-	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (int64, error) {
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, status, date, forwarded, reply, media)
+	 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
+	  chat_id, owner, message.Content, message.Status, message.Forwarded, message.Reply, message.Media)
 	if err != nil {
 		return -1, err
 	}
@@ -18,8 +20,8 @@ func (db *appdbimpl) SendMessage(chat_id int, owner string, content string) (int
 	return message_id, nil
 }
 
-func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) error {
-	_, err := db.c.Exec("DELETE FROM messages WHERE (owner = ?, chat_id = ?, message_id = ?)", owner, chat_id, message_id)
+func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id string) error {
+	_, err := db.c.Exec("DELETE FROM messages WHERE owner = ? AND chat_id = ? AND message_id = ?", owner, chat_id, message_id)
 	if err != nil {
 		return err
 	}
@@ -27,20 +29,20 @@ func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id int) er
 	return nil
 }
 
-func (db *appdbimpl) ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) {
+func (db *appdbimpl) ForwardMessage(owner string, chat1_id string, content string, chat2_id string) (int, error) {
 	res1, err := db.VerifyUserIsMamberOfChat(owner, chat1_id)
 	if err != nil {
 		return -1, err
 	}
 	if !res1 {
-		return -1, nil
+		return -1, errors.New("User Is Not A Member")
 	}
 	res2, err := db.VerifyUserIsMamberOfChat(owner, chat2_id)
 	if err != nil {
 		return -1, err
 	}
 	if !res2 {
-		return -1, nil
+		return -1, errors.New("User Is Not A Member")
 	}
 
 	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)

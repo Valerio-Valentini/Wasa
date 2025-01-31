@@ -8,17 +8,20 @@ import (
 
 func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var message Message
-	err := json.NewDecoder(r.Body).Decode(&message)
+	type Owner struct {
+		Id string `json:"user_id"`
+	}
+	var owner Owner
+	err := json.NewDecoder(r.Body).Decode(&owner)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = rt.db.DeleteMessage(message.Owner, message.Chat_id, message.Message_id)
+	err = rt.db.DeleteMessage(owner.Id, ps.ByName("chat_id"), ps.ByName("message_id"))
 	if err != nil {
+		// fmt.Println("Error:", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 }

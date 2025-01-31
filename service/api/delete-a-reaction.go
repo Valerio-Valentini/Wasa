@@ -8,17 +8,13 @@ import (
 
 func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var reaction Reaction
-	err := json.NewDecoder(r.Body).Decode(&reaction)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// QUI
 
-	err = rt.db.DeleteReaction(reaction.Owner, reaction.Message_id)
+	owner := Header.Get("Authorization")
+	err = rt.db.DeleteReaction(owner, ps.ByName("message_id"), ps.ByName("chat_id"))
 	if err != nil {
+		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 }

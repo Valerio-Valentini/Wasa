@@ -4,12 +4,7 @@ import (
 	"errors"
 )
 
-func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) error {
-	var chat_id int
-	err := db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", message).Scan(&chat_id)
-	if err != nil {
-		return err
-	}
+func (db *appdbimpl) InsertReaction(owner string, reaction string, message string, chat_id string) error {
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {
 		return err
@@ -17,7 +12,6 @@ func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) 
 	if !res {
 		return errors.New("User Is Not A Member")
 	}
-
 	_, err = db.c.Exec("INSERT INTO message_reactions (owner, reaction, message_id) VALUES (?,?,?)", owner, reaction, message)
 	if err != nil {
 		return err
@@ -26,12 +20,7 @@ func (db *appdbimpl) InsertReaction(owner string, reaction string, message int) 
 	return nil
 }
 
-func (db *appdbimpl) DeleteReaction(owner string, message int) error {
-	var chat_id int
-	err := db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", message).Scan(&chat_id)
-	if err != nil {
-		return err
-	}
+func (db *appdbimpl) DeleteReaction(owner string, message string, chat_id string) error {
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {
 		return err
@@ -48,12 +37,7 @@ func (db *appdbimpl) DeleteReaction(owner string, message int) error {
 	return nil
 }
 
-func (db *appdbimpl) ChangeReaction(owner string, reaction string, message int) error {
-	var chat_id int
-	err := db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", message).Scan(&chat_id)
-	if err != nil {
-		return err
-	}
+func (db *appdbimpl) ChangeReaction(owner string, reaction string, message string) error {
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {
 		return err

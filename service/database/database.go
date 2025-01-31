@@ -87,9 +87,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		`CREATE TABLE IF NOT EXISTS media_chat (
 		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
 		owner VARCHAR(16) NOT NULL,
-		chat_id INTEGER NOT NULL,
-		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
-		FOREIGN KEY(owner) REFERENCES users (user_id)
+		chat_id INTEGER NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS profile_photo (
@@ -99,54 +97,43 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 		`CREATE TABLE IF NOT EXISTS group_photo (
 		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		chat_id INTEGER(16) NOT NULL,
-		FOREIGN KEY(chat_id) REFERENCES chat (chat_id)
+		chat_id INTEGER(16) NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS users (
 		user_id VARCHAR(16) NOT NULL PRIMARY KEY,
-		photo_id INTEGER NOT NULL,
-		FOREIGN KEY(photo_id) REFERENCES profile_photo (photo_id)
+		photo_id INTEGER NOT NULL DEFAULT 0
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat (
 		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		is_group BOOLEAN NOT NULL,
 		chat_photo INTEGER NOT NULL,
-		chat_name VARCHAR(16),
-		FOREIGN KEY(chat_photo) REFERENCES media_chat (photo_id)
+		chat_name VARCHAR(16)
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat_members (
 		user_id VARCHAR(16) NOT NULL,
-		chat_id  INTEGER NOT NULL,
-		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
-		FOREIGN KEY(user_id) REFERENCES users (user_id)
+		chat_id  INTEGER NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS messages (
 		message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		chat_id  INTEGER NOT NULL,
 		status VARCHAR(16),
-		date DATETIME DEFAULT CURRENT_TIME_STAMP,
+		date DATETIME DEFAULT CURRENT_TIMESTAMP,
 		owner VARCHAR(16) NOT NULL,
 		forwarded BOOLEAN NOT NULL,
 		reply INTEGER,
 		media INTEGER,
-		content VARCHAR(16),
-		FOREIGN KEY(chat_id) REFERENCES chat (chat_id),
-		FOREIGN KEY(owner) REFERENCES users (user_id),
-		FOREIGN KEY(reply) REFERENCES message (message_id),
-		FOREIGN KEY(media) REFERENCES media_chat (photo_id)
+		content VARCHAR(16)
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS message_reactions (
 		owner VARCHAR(16) NOT NULL,
 		reaction VARCHAR(16),
 		message_id INTEGER NOT NULL,
-		FOREIGN KEY(owner) REFERENCES users (user_id),
-		FOREIGN KEY(message_id) REFERENCES message (message_id),
-		PRIMARY KEY(owner, message_id)
+		PRIMARY KEY (owner, message_id)
 		);`,
 
 		`INSERT INTO profile_photo (photo_id, owner) VALUES (0, 0);`,

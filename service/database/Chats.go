@@ -1,5 +1,7 @@
 package database
 
+import "strconv"
+
 func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
 	res, err := db.c.Exec("INSERT INTO chat (is_group) VALUES (?)", group)
 	if err != nil {
@@ -11,8 +13,10 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
 		return -1, err
 	}
 
+	id_chat_str := strconv.FormatInt(id_chat, 10)
+
 	for _, member := range members {
-		err = db.AddMember(id_chat, member)
+		err = db.AddMember(id_chat_str, member)
 		if err != nil {
 			return -1, err
 		}
@@ -21,7 +25,7 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
 	return id_chat, nil
 }
 
-func (db *appdbimpl) AddMember(chat_id int64, user_id string) error {
+func (db *appdbimpl) AddMember(chat_id string, user_id string) error {
 	_, err := db.c.Exec("INSERT INTO chat_members (chat_id, user_id) VALUES (?,?)", chat_id, user_id)
 	if err != nil {
 		return err
@@ -30,7 +34,7 @@ func (db *appdbimpl) AddMember(chat_id int64, user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) LeaveChat(chat_id int64, user_id string) error {
+func (db *appdbimpl) LeaveChat(chat_id string, user_id string) error {
 	_, err := db.c.Exec("DELETE FROM chat_members WHERE (user_id = ? AND chat_id = ?)", user_id, chat_id)
 	if err != nil {
 		return err

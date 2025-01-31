@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/database"
 )
 
 func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -18,9 +19,13 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 	chats, err := rt.db.GetChats(user.User_id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(chats)
+	type Response struct {
+		Chats []database.Chat `json:"chats"`
+	}
+	if chats == nil {
+		chats = []database.Chat{}
+	}
+	_ = json.NewEncoder(w).Encode(Response{Chats: chats})
 }

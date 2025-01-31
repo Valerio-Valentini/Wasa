@@ -8,17 +8,13 @@ import (
 
 func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var reaction Reaction
-	err := json.NewDecoder(r.Body).Decode(&reaction)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// QUI
 
-	err = rt.db.InsertReaction(reaction.Owner, reaction.Reaction, reaction.Message_id)
+	owner := r.Header.Get("Authorization")
+	err = rt.db.InsertReaction(owner, ps.ByName("reaction_id"), ps.ByName("message_id", ps.ByName("chat_id")))
 	if err != nil {
+		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 }

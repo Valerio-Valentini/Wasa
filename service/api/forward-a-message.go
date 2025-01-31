@@ -8,17 +8,22 @@ import (
 
 func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var message ForwardedMessage
-	err := json.NewDecoder(r.Body).Decode(&message)
+	type IncomingChat struct {
+		Chat_id string `json:"chats"`
+	}
+	var original_chat IncomingChat
+	err := json.NewDecoder(r.Body).Decode(&original_chat)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	id, err := rt.db.ForwardMessage(message.Owner, message.Chat_id, message.Content, message.Chat_id_2)
+	owner := r.Header.Get("Authorization")
+	id, err := rt.db.ForwardedMessage(owner,
+		original_chat.Chat_id,
+		ps.ByName("message_id"),
+		ps.ByName("chat_id"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 	w.WriteHeader(http.StatusOK)
