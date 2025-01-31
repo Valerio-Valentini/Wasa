@@ -38,38 +38,40 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	// ----------------------------------------------------- Chats_Functions
-	StartChat(group bool, members []string) (int64, error)       // ok
-	AddMember(chat_id int64, user_id string) error               // ok
-	LeaveChat(chat_id int64, user_id string) error               // ok
-	GetChats(user_id string) ([]Chat, error)                     // ok
-	UpdateGroupPhoto(chat_id int, photo_id int) (int64, error)   // ok
-	SetGroupName(user_id string, chat_id int, name string) error // ok
-	// ----------------------------------------------------- Messages_Functions
-	GetMessagesFromChat(chat_id int) ([]Message, error)                                   // ok
-	SendMedia(chat_id int, owner string, content string) (int64, error)                   // ok
-	SendMessage(chat_id int, owner string, content string) (int64, error)                 // ok
-	DeleteMessage(owner string, chat_id int, message_id int) error                        // ok
-	ForwardMessage(owner string, chat1_id int, content string, chat2_id int) (int, error) // ok
-	ReplyMessage(owner string, reply int, content string) error                           // ok
-	DeleteMedia(user_id string, photo_id int, chat_id int) error                          // ok
-	// ----------------------------------------------------- Reactions_Functions
-	ChangeReaction(owner string, reaction string, message int) error // ok
-	DeleteReaction(owner string, message int) error                  // ok
-	InsertReaction(owner string, reaction string, message int) error // ok
-	// ----------------------------------------------------- Users_Functions
-	ChangePhoto(user_id string, photo_id int) (int64, error) // ok
-	SearchUser(user_id string) ([]User, error)               // ok
-	UpdateUser(user_id string, new_user_id string) error     // ok
-	InsertUser(username string) error                        // ok
-	VerifyUser(username string) (bool, error)                // ok
-	VerifyUserIsMamberOfChat(user_id string, chat_id int) (bool, error)
-	GetIdProfilePicture(user_id string) (int64, error)
-	CreateNewId(user_id string) (int64, error)
-	CreateNewPhotoId(chat_id string) (int64, error)
-	GetIdPhoto(user_id string) (int, error)
-	GetIdGroupPicture(chat_id string) (int64, error)
-	CreateNewMediaId(user_id string) (int64, error)
+	type AppDatabase interface {
+		// ----------------------------------------------------- Chats_Functions
+		StartChat(group bool, members []string) (int64, error)       // ok
+		AddMember(chat_id string, user_id string) error              // ok
+		LeaveChat(chat_id string, user_id string) error              // ok
+		GetChats(user_id string) ([]Chat, error)                     // ok
+		UpdateGroupPhoto(chat_id int, photo_id int) (int64, error)   // ok
+		SetGroupName(user_id string, chat_id int, name string) error // ok
+		// ----------------------------------------------------- Messages_Functions
+		GetMessagesFromChat(chat_id string) ([]Message, error)                                              // ok
+		SendMedia(chat_id int, owner string, content string) (int64, error)                                 // ok
+		SendMessage(chat_id int, owner string, message Message) (int64, error)                              // ok
+		DeleteMessage(owner string, chat_id string, message_id string) error                                // ok
+		ForwardMessage(owner string, chat1_id string, original_msg_id string, chat2_id string) (int, error) // ok
+		ReplyMessage(owner string, reply int, content string) error                                         // ok
+		DeleteMedia(user_id string, photo_id int, chat_id int) error                                        // ok
+		// ----------------------------------------------------- Reactions_Functions
+		ChangeReaction(owner string, reaction string, message int, chat_id string) error    // ok
+		DeleteReaction(owner string, message string, chat_id string) error                  // ok
+		InsertReaction(owner string, reaction string, message string, chat_id string) error // ok
+		// ----------------------------------------------------- Users_Functions
+		ChangePhoto(user_id string, photo_id int) (int64, error) // ok
+		SearchUser(user_id string) ([]User, error)               // ok
+		UpdateUser(user_id string, new_user_id string) error     // ok
+		InsertUser(username string) error                        // ok
+		VerifyUser(username string) (bool, error)                // ok
+		VerifyUserIsMamberOfChat(user_id string, chat_id string) (bool, error)
+		GetIdProfilePicture(user_id string) (int64, error)
+		CreateNewId(user_id string) (int64, error)
+		CreateNewPhotoId(chat_id string) (int64, error)
+		GetIdPhoto(user_id string) (int, error)
+		GetIdGroupPicture(chat_id string) (int64, error)
+		CreateNewMediaId(user_id string) (int64, error)
+	   }
 }
 
 type appdbimpl struct {
