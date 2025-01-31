@@ -54,7 +54,7 @@ type AppDatabase interface {
 	ReplyMessage(owner string, reply int, content string) error                                         // ok
 	DeleteMedia(user_id string, photo_id int, chat_id int) error                                        // ok
 	// ----------------------------------------------------- Reactions_Functions
-	ChangeReaction(owner string, reaction string, message int, chat_id string) error    // ok
+	ChangeReaction(owner string, reaction string, message string, chat_id string) error    // ok
 	DeleteReaction(owner string, message string, chat_id string) error                  // ok
 	InsertReaction(owner string, reaction string, message string, chat_id string) error // ok
 	// ----------------------------------------------------- Users_Functions
