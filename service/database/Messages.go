@@ -5,8 +5,7 @@ import (
 )
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (int64, error) {
-	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, status, date, forwarded, reply, media)
-	 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, status, date, forwarded, reply, media) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
 	  chat_id, owner, message.Content, message.Status, message.Forwarded, message.Reply, message.Media)
 	if err != nil {
 		return -1, err
