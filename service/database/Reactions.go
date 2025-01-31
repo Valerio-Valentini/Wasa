@@ -37,7 +37,7 @@ func (db *appdbimpl) DeleteReaction(owner string, message string, chat_id string
 	return nil
 }
 
-func (db *appdbimpl) ChangeReaction(owner string, reaction string, message string) error {
+func (db *appdbimpl) ChangeReaction(owner string, reaction string, message string, chat_id string) error {
 	res, err := db.VerifyUserIsMamberOfChat(owner, chat_id)
 	if err != nil {
 		return err

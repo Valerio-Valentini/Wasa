@@ -53,7 +53,7 @@ func (db *appdbimpl) ForwardMessage(owner string, chat1_id string, content strin
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {
-	var chat_id int
+	var chat_id string
 	err := db.c.QueryRow("SELECT chat_id FROM messages WHERE message_id = ? ", reply).Scan(&chat_id)
 	if err != nil {
 		return err
