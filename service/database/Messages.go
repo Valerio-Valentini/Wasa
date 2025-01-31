@@ -19,7 +19,7 @@ func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (in
 	return message_id, nil
 }
 
-func (db *appdbimpl) DeleteMessage(owner string, chat_id int, message_id string) error {
+func (db *appdbimpl) DeleteMessage(owner string, chat_id string, message_id string) error {
 	_, err := db.c.Exec("DELETE FROM messages WHERE owner = ? AND chat_id = ? AND message_id = ?", owner, chat_id, message_id)
 	if err != nil {
 		return err
