@@ -19,7 +19,7 @@ func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httpro
 
 	message_id, err := rt.db.SendMessage(message.Chat_id, message.Owner,
 		database.Message{
-			message_id: "",
+			Message_id: "",
 			Chat_id: message.Message_id,
 			Status: message.Status,
 			Date: message.Date,

@@ -18,7 +18,7 @@ func (rt *_router) VerifyUser(username string) (bool, error) {
 	return res, nil
 }
 
-func (rt *_router) VerifyUserIsMamberOfChat(user_id string, chat_id int) (bool, error) {
+func (rt *_router) VerifyUserIsMamberOfChat(user_id string, chat_id string) (bool, error) {
 	res, err := rt.db.VerifyUserIsMamberOfChat(user_id, chat_id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
