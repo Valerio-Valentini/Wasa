@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -18,5 +19,5 @@ func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps ht
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
-	}
+	} 
 }
