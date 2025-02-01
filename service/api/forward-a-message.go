@@ -18,7 +18,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 	owner := r.Header.Get("Authorization")
-	id, err := rt.db.ForwardedMessage(owner,
+	id, err := rt.db.ForwardMessage(owner,
 		original_chat.Chat_id,
 		ps.ByName("message_id"),
 		ps.ByName("chat_id"))
