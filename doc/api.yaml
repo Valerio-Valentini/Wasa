@@ -147,9 +147,8 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}/chats/{chat_id}/photo:
+  /chats/{chat_id}/photo:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
     put:
       tags: ["group"]
@@ -176,9 +175,8 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}/chats/{chat_id}/members/{member_id}:
+  /chats/{chat_id}/members/{member_id}:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/member_id"
     put:
@@ -201,18 +199,14 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}/chats/{chat_id}:
-    parameters:
-      - $ref: "#/components/parameters/identifier"
-      - $ref: "#/components/parameters/chat_id"
-    get:
-      tags: ["chat"]
-      summary: retrieves a chat's messages
-      description: get all the messages of an user's chat
-      operationId: getMyConversation
+    delete:
+      tags: ["group"]
+      summary: leave a group
+      description: leave a group chat
+      operationId: leaveGroup
       responses:
-        '200':
-          $ref: "#/components/responses/stream"
+        '204':
+          $ref: "#/components/responses/no_content"
         '401':
           $ref: "#/components/responses/unauthorized"
         '403':
@@ -221,8 +215,13 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
+      
       security:
         - bearerAuth: []
+    
+  /chats/{chat_id}:
+    parameters:
+      - $ref: "#/components/parameters/chat_id"
     put:
       tags: ["group"]
       summary: set the group's name
@@ -249,11 +248,39 @@ paths:
           $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: []
+  
+  /users/{user_id}/chats/{chat_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+      - $ref: "#/components/parameters/chat_id"
+    get:
+      tags: ["chat"]
+      summary: retrieves a chat's messages
+      description: get all the messages of an user's chat
+      operationId: getMyConversation
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /chats/{chat_id}/messages/{message_id}:
+    parameters:
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
     delete:
-      tags: ["group"]
-      summary: leave a group
-      description: leave a group chat
-      operationId: leaveGroup
+      tags: ["message"]
+      summary: delete a message
+      description: delete a message
+      operationId: deleteMessage
       responses:
         '204':
           $ref: "#/components/responses/no_content"
@@ -265,15 +292,10 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
-      
-      security:
-        - bearerAuth: []
         
-  /users/{user_id}/chats/{chat_id}/messages/{message_id}:
+  /chats/{chat_id}/messages:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
-      - $ref: "#/components/parameters/message_id"
     post:
       tags: ["message"]
       summary: send a message
@@ -301,26 +323,9 @@ paths:
           
       security:
         - bearerAuth: []
-    delete:
-      tags: ["message"]
-      summary: delete a message
-      description: delete a message
-      operationId: deleteMessage
-      responses:
-        '204':
-          $ref: "#/components/responses/no_content"
-        '401':
-          $ref: "#/components/responses/unauthorized"
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '404':
-          $ref: "#/components/responses/not_found"
-        '500':
-          $ref: "#/components/responses/internal_server_error"
           
-  /users/{user_id}/chats/{chat_id}/messages/{message_id}/reaction/{reaction_id}:
+  /chats/{chat_id}/messages/{message_id}/reaction/{reaction_id}:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/message_id"
       - $ref: "#/components/parameters/reaction_id"
@@ -365,9 +370,8 @@ paths:
         '500':
           $ref: "#/components/responses/internal_server_error"
   
-  /users/{user_id}/chats/{chat_id}/messages/forwarded/{message_id}:
+  /chats/{chat_id}/messages/forwarded/{message_id}:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/message_id"
     post:
@@ -398,9 +402,8 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}/chats/{chat_id}/media/{media_id}:
+  /chats/{chat_id}/media/{media_id}:
     parameters:
-      - $ref: "#/components/parameters/identifier"
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/media_id"
     post:
