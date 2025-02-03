@@ -60,7 +60,7 @@ func (db *appdbimpl) CreateNewPhotoId(chat_id string) (int64, error) {
 	if err != nil {
 		return -1, err
 	}
-	result, err := db.c.Exec("INSERT INTO group_photo (user_id) VALUES(?)", chat_id)
+	result, err := db.c.Exec("INSERT OR IGNORE INTO group_photo (user_id) VALUES(?)", chat_id)
 	if err != nil {
 		return -1, err
 	}
