@@ -136,7 +136,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		PRIMARY KEY (owner, message_id)
 		);`,
 
-		`INSERT INTO profile_photo (photo_id, owner) VALUES (0, 0);`,
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure

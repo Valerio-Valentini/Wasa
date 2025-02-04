@@ -5,6 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/database"
+	"fmt"
 )
 
 func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -12,6 +13,7 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
+		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
