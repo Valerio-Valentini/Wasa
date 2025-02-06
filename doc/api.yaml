@@ -147,6 +147,27 @@ paths:
       security:
         - bearerAuth: []
         
+    put:
+      tags: ["chat"]
+      summary: new chat
+      description: create a new chat
+      operationId: createNewChat
+      
+      responses:
+        '201':
+          $ref: '#/components/responses/operation_successfull'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
+        
   /chats/{chat_id}/photo:
     parameters:
       - $ref: "#/components/parameters/chat_id"
@@ -370,7 +391,7 @@ paths:
         '500':
           $ref: "#/components/responses/internal_server_error"
   
-  /chats/{chat_id}/messages/forwarded/{message_id}:
+  /chats/{chat_id}/forwarded/{message_id}:
     parameters:
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/message_id"

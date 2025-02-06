@@ -13,7 +13,7 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

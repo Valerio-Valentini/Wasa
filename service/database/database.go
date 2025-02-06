@@ -70,6 +70,7 @@ type AppDatabase interface {
 	GetIdPhoto(user_id string) (int, error)
 	GetIdGroupPicture(chat_id string) (int64, error)
 	CreateNewMediaId(user_id string) (int64, error)
+	NewChat(group bool, photo int, name string) (int64, error) // <--
    }
 
 type appdbimpl struct {

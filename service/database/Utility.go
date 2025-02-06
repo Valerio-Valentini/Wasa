@@ -104,3 +104,15 @@ func (db *appdbimpl) CreateNewMediaId(user_id string) (int64, error) {
 	}
 	return id, nil
 }
+
+func (db *appdbimpl) NewChat(group bool, photo int, name string) (int64, error) {  // <--
+	result, err := db.c.Exec("INSERT INTO chat (is_group, chat_photo, chat_name) VALUES(?, ?, ?)", group, photo, name)
+	if err != nil {
+		return -1, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+	return id, nil
+}

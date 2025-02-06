@@ -50,7 +50,7 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 	}
 
 	// creare file
-	id_string := strconv.FormatInt(id, 36) //???
+	id_string := strconv.FormatInt(id, 36) // ???
 	out, err := os.Create("./media/group_picture/" + chat_id + "/" + id_string)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
