@@ -2,7 +2,8 @@
 export default {
 	data: function() {
 		return {
-			username: null
+			username: null,
+            chats: null
 		}
 	},
 
@@ -11,15 +12,22 @@ export default {
 	
 	},
 
-    async mounted() {
+    async mounted() { 
         try {
                 let response = await this.$axios.get("/users/"+this.identifier+"/chats", {
                     user_id: this.identifier,
                     photo_id: 0
-                })
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
 
+                this.chats = response.data.chats
                 console.log(response)
-                
+                console.log(this.chats)
             } 
             catch (error) {
                 console.log(error)
@@ -68,12 +76,7 @@ export default {
         <div class="row">
             <div class="col-4">
                 <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                        The current link item
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">link item</a>
-                    <a href="#" class="list-group-item list-group-item-action">link item</a>
-                    <a href="#" class="list-group-item list-group-item-action">link item</a>
+                    <a href="#" class="list-group-item list-group-item-action" v-for="(chat, index) in chats" :key="index">{{ chat.Chat_name }}</a>
                 </div>
             </div>
             <div class="col-8">

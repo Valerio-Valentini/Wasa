@@ -1,6 +1,10 @@
 package database
 
-import "strconv"
+import (
+	"strconv"
+	"fmt"
+) 
+
 
 func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
 	res, err := db.c.Exec("INSERT INTO chat (is_group) VALUES (?)", group)
@@ -45,7 +49,7 @@ func (db *appdbimpl) LeaveChat(chat_id string, user_id string) error {
 
 func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 	rows, err := db.c.Query("SELECT chat_id FROM chat_members WHERE user_id = ? ", user_id)
-
+	fmt.Println(user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -60,10 +64,15 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 		if err != nil {
 			return nil, err
 		}
+		fmt.Println("---")
+		fmt.Println(id)
 		err = db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
+			fmt.Println("===")
+			fmt.Println(err)
 			return nil, err
 		}
+		fmt.Println(chat)
 		chats = append(chats, chat)
 	}
 
