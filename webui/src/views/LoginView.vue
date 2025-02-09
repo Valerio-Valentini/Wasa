@@ -12,7 +12,7 @@ export default {
                     user_id: this.username.trim()
                 })
 
-                console.log(response)
+                //console.log(response)
                 localStorage.setItem("id", this.username)
                 this.$emit("user_login", true)
                 
@@ -23,6 +23,11 @@ export default {
 		
 	
 	},
+
+  mounted(){
+    if (this.identifier) this.$emit("user_login", true)
+  },
+ 
 
     props: ["identifier"]
 }
@@ -38,7 +43,7 @@ export default {
                 <span class="input-group-text" id="addon-wrapping">@</span>
                   <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping" v-model="username">
               </div>
-              <a class="btn btn-primary" id="btn" @click="login">Accedi</a>
+              <button class="btn btn-primary" id="btn" @click="login" :disabled="!this.username || this.username.trim().length==0">Accedi</button>
             </div>
         </div>
       </div>

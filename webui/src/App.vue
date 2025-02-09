@@ -15,8 +15,14 @@ export default {
       this.logged=data
       this.identifier=localStorage.getItem("id")
       this.$router.replace("/home")
-    }
-	}
+    },
+
+    check_logout() {
+      this.identifier=null
+      localStorage.removeItem("id");
+      this.$router.replace("/login")
+    },
+	},
 }
 </script>
 
@@ -25,6 +31,7 @@ export default {
     <div class="row">
       <RouterView 
         @user_login="check_login"
+        @logout="check_logout"
         :identifier="identifier"
       />
     </div>

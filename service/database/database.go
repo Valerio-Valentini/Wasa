@@ -109,8 +109,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 		`CREATE TABLE IF NOT EXISTS chat (
 		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		is_group BOOLEAN NOT NULL,
-		chat_photo INTEGER NOT NULL,
-		chat_name VARCHAR(16)
+		chat_photo INTEGER NOT NULL DEFAULT 0,
+		chat_name VARCHAR(20) DEFAULT 'A chat'
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat_members (

@@ -14,8 +14,8 @@ func (rt *_router) Handler() http.Handler {
 	// CHAT
 	rt.router.GET("/users/:user_id/chats", rt.getAllChats)                  // ok +
 	rt.router.GET("/users/:user_id/chats/:chat_id", rt.getMessagesFromChat) // ok +
-	rt.router.PUT("/users/:user_id/chats", rt.createNewChat) // <--
 	// GROUP
+	rt.router.PUT("/chats", rt.createNewChat) // ok +
 	rt.router.PUT("/chats/:chat_id/photo", rt.putNewGroupPhoto)        // notok +
 	rt.router.PUT("/chats/:chat_id/members/:member_id", rt.addAMember) // ok +
 	rt.router.PUT("/chats/:chat_id", rt.putNewGroupName)               // ok +

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: WASAtext API
   description: continua
-  version: 0.0.7
+  version: 0.0.8
   
 tags:
   - name: "user"
@@ -64,6 +64,28 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+        
+  /chats: 
+    put:
+      tags: ["chat"]
+      summary: new chat
+      description: create a new chat
+      operationId: createNewChat
+      
+      responses:
+        '201':
+          $ref: '#/components/responses/operation_successfull'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
       security:
         - bearerAuth: []
         
@@ -144,27 +166,6 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
-      security:
-        - bearerAuth: []
-        
-    put:
-      tags: ["chat"]
-      summary: new chat
-      description: create a new chat
-      operationId: createNewChat
-      
-      responses:
-        '201':
-          $ref: '#/components/responses/operation_successfull'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '404':
-          $ref: "#/components/responses/not_found"
-        '500':
-          $ref: "#/components/responses/internal_server_error"
-          
       security:
         - bearerAuth: []
         

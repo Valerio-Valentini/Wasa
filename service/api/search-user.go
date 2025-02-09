@@ -8,17 +8,18 @@ import (
 
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var user User
+	/*var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
+		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
-	}
+	}*/
 
-	users, err := rt.db.SearchUser(user.User_id)
+
+	users, err := rt.db.SearchUser(r.URL.Query().Get("user_id"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
 	}
 	w.WriteHeader(http.StatusOK)
