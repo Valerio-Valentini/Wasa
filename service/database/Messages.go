@@ -5,8 +5,8 @@ import (
 )
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (int64, error) {
-	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, status, date, forwarded, reply, media) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
-	  chat_id, owner, message.Content, message.Status, message.Forwarded, message.Reply, message.Media)
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, forwarded, reply) VALUES (?, ?, ?, ?, ?)",
+		chat_id, owner, message.Content, message.Forwarded, message.Reply)
 	if err != nil {
 		return -1, err
 	}
@@ -75,7 +75,7 @@ func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error
 }
 
 func (db *appdbimpl) GetMessagesFromChat(chat_id string) ([]Message, error) {
-	rows, err := db.c.Query("SELECT * FROM messages WHERE chat_id = ? ", chat_id)
+	rows, err := db.c.Query("SELECT * FROM messages WHERE chat_id = ? ORDER BY date DESC", chat_id)
 
 	if err != nil {
 		return nil, err
@@ -86,7 +86,11 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id string) ([]Message, error) {
 	var messages []Message
 	for rows.Next() {
 		var message Message
-		err = rows.Scan(&message)
+		err = rows.Scan(
+			&message.Message_id, &message.Chat_id,
+			&message.Status, &message.Date, &message.Owner,
+			&message.Forwarded, &message.Reply, &message.Media,
+			&message.Content)
 		if err != nil {
 			return nil, err
 		}

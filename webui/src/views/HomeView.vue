@@ -5,7 +5,9 @@ export default {
             username: null,
             chats: [],
             searchUser: null,
-            foundUsers: []
+            foundUsers: [],
+            chatSelected: null,
+            messages: []
         }
     },
 
@@ -30,16 +32,10 @@ export default {
             }
         },
 
-        handleAddToGroup(user) {
-            console.log("Adding user to group:", user);
-            
-            
-        },
         async handleChat(user) {
-            console.log("Starting chat with:", user);
             try {
                 let response = await this.$axios.put("/chats", {
-                    user_ids: [this.identifier.toString(), user.toString()],
+                    user_ids: [this.identifier.toString(), user.user_id.toString()],
                     chat_group: false
                     }
                 );
@@ -60,12 +56,26 @@ export default {
             },
             )
             this.chats = response.data.chats
-            console.log("AE: ", this.chats)
         }
         catch (error) {
             console.log(error)
         }
-        }
+        },
+
+        async selectedChatHandler(pickedChat){
+            try {
+                this.chatSelected = pickedChat;
+                let response = await this.$axios.get("/users/" + this.identifier + "/chats/" + this.chatSelected.first_chat_id, {
+                });
+
+                this.messages = response.data.messages
+                
+            }
+            catch (error) {
+                console.log(error)
+            }
+        },
+        
     },
 
     async mounted() {
@@ -81,7 +91,7 @@ export default {
         <div class="row">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
                 <div class="container-fluid">
-                    <a class="navbar-brand">WasaText</a>
+                    <a class="navbar-brand rounded text-center" style="color: white; background-color: #008069; width: 140px">WasaText</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -129,8 +139,8 @@ export default {
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <UserItem v-for="(user, index) in foundUsers" :key="index" :user="user" @add-to-group="handleAddToGroup"
-                    @chat="handleChat" />
+                <UserItem v-for="(user, index) in foundUsers" :key="index" :user="user"
+                    @chat="handleChat(user)" />
 
             </div>
         </div>
@@ -139,33 +149,11 @@ export default {
         <div class="row">
             <div class="col-4">
                 <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action" v-for="(chat, index) in chats"
-                        :key="index">{{ chat.Chat_name }}</a>
+                    <a class="list-group-item list-group-item-action hover-box" v-for="(chat, index) in chats"
+                        :key="index" @click="selectedChatHandler(chat)" >{{ chat.Chat_name.split("-")[1]  }} </a>
                 </div>
             </div>
-            <div class="col-8">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card" id="spc">
-
-                                <div class="card-body">
-                                    <p class="card-text">testo</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="input-group" id="txt">
-                                <input type="text" class="form-control"
-                                    aria-label="Dollar amount (with dot and two decimal places)">
-                                <span class="input-group-text" id="btn">Invia</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ChatBox :selectedChat="this.chatSelected" :identifier="this.identifier" :messages="this.messages"/>
         </div>
     </div>
 </template>

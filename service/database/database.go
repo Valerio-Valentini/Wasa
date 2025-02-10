@@ -54,7 +54,7 @@ type AppDatabase interface {
 	ReplyMessage(owner string, reply int, content string) error                                         // ok
 	DeleteMedia(user_id string, photo_id int, chat_id int) error                                        // ok
 	// ----------------------------------------------------- Reactions_Functions
-	ChangeReaction(owner string, reaction string, message string, chat_id string) error    // ok
+	ChangeReaction(owner string, reaction string, message string, chat_id string) error // ok
 	DeleteReaction(owner string, message string, chat_id string) error                  // ok
 	InsertReaction(owner string, reaction string, message string, chat_id string) error // ok
 	// ----------------------------------------------------- Users_Functions
@@ -71,7 +71,7 @@ type AppDatabase interface {
 	GetIdGroupPicture(chat_id string) (int64, error)
 	CreateNewMediaId(user_id string) (int64, error)
 	NewChat(group bool, photo int, name string) (int64, error) // <--
-   }
+}
 
 type appdbimpl struct {
 	c *sql.DB
@@ -121,12 +121,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 		`CREATE TABLE IF NOT EXISTS messages (
 		message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		chat_id  INTEGER NOT NULL,
-		status VARCHAR(16),
+		status INTEGER NOT NULL DEFAULT 0,
 		date DATETIME DEFAULT CURRENT_TIMESTAMP,
 		owner VARCHAR(16) NOT NULL,
-		forwarded BOOLEAN NOT NULL,
-		reply INTEGER,
-		media INTEGER,
+		forwarded INTEGER NOT NULL DEFAULT 0,
+		reply INTEGER NOT NULL DEFAULT 0,
+		media INTEGER NOT NULL DEFAULT -1,
 		content VARCHAR(16)
 		);`,
 
@@ -136,7 +136,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 		message_id INTEGER NOT NULL,
 		PRIMARY KEY (owner, message_id)
 		);`,
-
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure

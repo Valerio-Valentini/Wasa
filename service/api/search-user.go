@@ -16,7 +16,6 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}*/
 
-
 	users, err := rt.db.SearchUser(r.URL.Query().Get("user_id"))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

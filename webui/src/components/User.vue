@@ -1,8 +1,7 @@
 <template>
     <div class="user-item">
       <span class="user-name">{{ user.user_id }}</span>
-      <button class="btn btn-primary" @click="addToGroup">Add to Group</button>
-      <button class="btn btn-secondary" @click="chat">Chat</button>
+      <button class="btn btn-primary" @click="chat">Chat</button>
     </div>
   </template>
   
@@ -15,9 +14,6 @@
       }
     },
     methods: {
-      addToGroup() {
-        this.$emit("add-to-group", this.user);
-      },
       chat() {
         this.$emit("chat", this.user);
       }
