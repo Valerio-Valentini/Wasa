@@ -49,9 +49,26 @@ func (db *appdbimpl) AddMember(chat_id string, user_id string) error {
 }
 
 func (db *appdbimpl) LeaveChat(chat_id string, user_id string) error {
-	_, err := db.c.Exec("DELETE FROM chat_members WHERE (user_id = ? AND chat_id = ?)", user_id, chat_id)
+	var memberCount int
+	err := db.c.QueryRow("SELECT COUNT(*) FROM chat_members WHERE chat_id = ?", chat_id).Scan(&memberCount)
 	if err != nil {
 		return err
+	}
+
+	if memberCount == 2 {
+		_, err = db.c.Exec("DELETE FROM chat_members WHERE chat_id = ?", chat_id)
+		if err != nil {
+			return err
+		}
+		_, err = db.c.Exec("DELETE FROM chat WHERE chat_id = ?", chat_id)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = db.c.Exec("DELETE FROM chat_members WHERE user_id = ? AND chat_id = ?", user_id, chat_id)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

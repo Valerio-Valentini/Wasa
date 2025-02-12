@@ -128,7 +128,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			date DATETIME DEFAULT CURRENT_TIMESTAMP,
 			owner VARCHAR(16) NOT NULL,
 			forwarded INTEGER NOT NULL DEFAULT 0,
-			reply INTEGER NOT NULL DEFAULT 0,
+			reply INTEGER NOT NULL DEFAULT -1,
 			media INTEGER NOT NULL DEFAULT -1,
 			content VARCHAR(16),
 			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
@@ -138,7 +138,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 		`CREATE TABLE IF NOT EXISTS message_reactions (
 			owner VARCHAR(16) NOT NULL,
-			reaction VARCHAR(16),
+			reaction VARCHAR(16) DEFAULT '-1',
 			message_id INTEGER NOT NULL,
 			FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
 			FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,

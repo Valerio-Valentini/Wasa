@@ -163,7 +163,9 @@ export default {
                         :key="index" @click="selectedChatHandler(chat)" >{{ getChatName(chat.Chat_name.split("-"))  }} </a>
                 </div>
             </div>
-            <ChatBox @sentMessage="selectedChatHandler" :selectedChat="this.chatSelected" :identifier="this.identifier" :messages="this.messages"/>
+            <ChatBox @sentMessage="selectedChatHandler" :selectedChat="this.chatSelected" 
+            :identifier="this.identifier" :messages="this.messages"
+            />
         </div>
     </div>
 </template>

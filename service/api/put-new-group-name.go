@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"strings"
+	"strconv"
 )
 
 func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -15,7 +17,15 @@ func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
-	err = rt.db.SetGroupName(values.User_id, values.Chat_id, values.Chat_name)
+	chat_id, err := strconv.Atoi(ps.ByName("chat_id"))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	owner := strings.Split(r.Header.Get("Authorization"), " ")[1]
+
+	err = rt.db.SetGroupName(owner, chat_id , values.Chat_name)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

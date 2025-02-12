@@ -18,56 +18,58 @@
                     <div class="card chat-box">
                         <div class="card-body chat-messages">
                             <p v-if="!messages || messages.length === 0" class="text-muted">No messages yet...</p>
-                            <Message v-for="(msg, _) in messages" :key="msg.message_id"  :msg="msg"
-                                />
-                                 <!--@reply="handleReply" @forward="handleForward" @reaction-added="handleReactionAdded"-->
+                            <Message v-for="(msg, _) in messages" :key="msg.message_id" :msg="msg" :messages="messages"
+                                :identifier="this.identifier" />
+                            <!--@reply="handleReply" @forward="handleForward" @reaction-added="handleReactionAdded"-->
                         </div>
                     </div>
                 </div>
             </div>
 
-                <!-- Input Field -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="input-group chat-input">
-                            <input type="text" v-model="newMessage" class="form-control" placeholder="Type a message..."
-                                @keyup.enter="sendMessage" />
-                            <span class="input-group-text send-btn" @click="sendMessage">Send</span>
-                        </div>
+            <!-- Input Field -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="input-group chat-input">
+                        <input type="text" v-model="newMessage" class="form-control" placeholder="Type a message..."
+                            @keyup.enter="sendMessage" />
+                        <span class="input-group-text send-btn" @click="sendMessage">Send</span>
                     </div>
                 </div>
-
-                <!-- Info Modal -->
-                <div v-if="showInfoModal" class="overlay">
-                    <div class="modal-content">
-                        <h5 v-if="selectedChat.Chat_group">Edit Chat Info</h5>
-                        <input v-model="editableChatName" class="form-control mb-2" placeholder="Chat Name" v-if="selectedChat.Chat_group">
-
-                        <h6 v-if="selectedChat.Chat_group">>Members:</h6>
-                        <ul class="list-group mb-2" v-if="selectedChat.Chat_group">
-                            <li v-for="(member, index) in selectedChat.members" :key="index" class="list-group-item">
-                                {{ member }}
-                            </li>
-                        </ul>
-
-                        <div class="input-group mb-2" v-if="selectedChat.Chat_group">
-                            <input v-model="newMember" type="text" class="form-control" placeholder="Add a member..." />
-                            <button class="btn btn-primary" @click="addMember">+</button>
-                        </div>
-
-                        <div class="input-group mb-2">
-                            <button class="btn btn-danger" @click="showInfoModal = false">Leave chat</button>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-danger" @click="showInfoModal = false">Close</button>
-                            <button class="btn btn-success" @click="saveChatName" v-if="selectedChat.Chat_group">Save</button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- Info Modal -->
+            <div v-if="showInfoModal" class="overlay">
+                <div class="modal-content">
+                    <h5 v-if="selectedChat.Chat_group">Edit Chat Info</h5>
+                    <input v-model="editableChatName" class="form-control mb-2" placeholder="Chat Name"
+                        v-if="selectedChat.Chat_group">
+
+                    <h6 v-if="selectedChat.Chat_group">>Members:</h6>
+                    <ul class="list-group mb-2" v-if="selectedChat.Chat_group">
+                        <li v-for="(member, index) in selectedChat.members" :key="index" class="list-group-item">
+                            {{ member }}
+                        </li>
+                    </ul>
+
+                    <div class="input-group mb-2" v-if="selectedChat.Chat_group">
+                        <input v-model="newMember" type="text" class="form-control" placeholder="Add a member..." />
+                        <button class="btn btn-primary" @click="addMember">+</button>
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <button class="btn btn-danger" @click="leaveChatHandler">Leave chat</button>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-danger" @click="showInfoModal = false">Close</button>
+                        <button class="btn btn-success" @click="saveChatName"
+                            v-if="selectedChat.Chat_group">Save</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
 </template>
 
 <script>
@@ -76,7 +78,6 @@ export default {
 
     data() {
         return {
-            // messages: [],
             newMessage: "",
             showInfoModal: false,
             editableChatName: "",
@@ -85,11 +86,11 @@ export default {
     },
     methods: {
 
-        openInfo(){
-            this.showInfoModal=true
+        openInfo() {
+            this.showInfoModal = true
         },
 
-        getChatName2(vector){
+        getChatName2(vector) {
             if (this.identifier == vector[0]) return vector[1]
             return vector[0]
         },
@@ -126,21 +127,47 @@ export default {
         },
 
 
-        addMember() {
+        async addMember() {
             if (this.newMember.trim() !== "") {
-                this.selectedChat.members.push(this.newMember);
-                this.newMember = "";
+                try {
+                    await this.$axios.put(("/chats/" + chat_id + "/members/" + this.newMember))
+                    this.selectedChat.members.push(this.newMember);
+                    this.newMember = "";
+
+                } catch (error) {
+                    console.log(error)
+                }
             }
         },
-        saveChatName() {
+        async saveChatName() {
             if (this.editableChatName.trim() !== "") {
-                this.selectedChat.Chat_name = this.editableChatName;
+                try {
+                    await this.$axios.put(("/chats/" + chat_id),{
+                        chat_name: this.editableChatName
+                    })
+                    this.selectedChat.Chat_name = this.editableChatName;
+
+                } catch (error) {
+                    console.log(error)
+                }
             }
             this.showInfoModal = false;
+            this.editableChatName = "";
+        },
+
+        async leaveChatHandler() {
+            try {
+                await this.$axios.delete(("/chats/" + this.selectedChat.first_chat_id + "/members/" + this.identifier))
+                alert("You left the chat!")
+                this.showInfoModal = false;
+            } catch (error) {
+                console.log(error)
+            }
         }
     },
 
     async mounted() {
+        console.log("INFO SELECT CAHT ", this.selectedChat)
         await this.loadMessage();
     }
 };

@@ -56,7 +56,5 @@ type Chat struct {
 }
 
 type NameChat struct {
-	User_id   string `json:"user_id"`
-	Chat_id   int    `json:"first_chat_id"`
 	Chat_name string `json:"chat_name"`
 }

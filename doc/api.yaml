@@ -89,35 +89,6 @@ paths:
       security:
         - bearerAuth: []
         
-  /users/{user_id}:
-    parameters:
-      - $ref: "#/components/parameters/identifier"
-    put:
-      tags: ["user"]
-      summary: Modifies the user's nickname
-      description: Modifies the user's nickname
-      operationId: setMyUserName
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/user_nickname"
-            example:
-              nickname: "continua"
-        required: true
-      responses: 
-        '204':
-          $ref: "#/components/responses/no_content"
-        '401':
-          $ref: "#/components/responses/unauthorized"
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '404':
-          $ref: "#/components/responses/not_found"
-        '500':
-          $ref: "#/components/responses/internal_server_error"
-      security:
-        - bearerAuth: [] 
         
   /users/{user_id}/photo:
     parameters:
