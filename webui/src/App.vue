@@ -23,6 +23,14 @@ export default {
       this.$router.replace("/login")
     },
 	},
+  mounted(){
+    let id = localStorage.getItem("id")
+    if (id) { 
+      this.identifier = id; 
+    }else{
+      this.identifier = null;
+    }
+  }
 }
 </script>
 

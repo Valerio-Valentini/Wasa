@@ -7,7 +7,6 @@ import (
 
 func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	// QUI
 
 	owner := r.Header.Get("Authorization")
 	err := rt.db.InsertReaction(owner, ps.ByName("reaction_id"), ps.ByName("message_id"), ps.ByName("chat_id"))

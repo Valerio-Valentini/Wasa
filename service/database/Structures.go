@@ -8,15 +8,15 @@ type User struct {
 }
 
 type Message struct {
-	Message_id string    `json:"message_id"`
-	Chat_id    int       `json:"chat_id"`
-	Status     string    `json:"status"`
-	Date       time.Time `json:"date"`
-	Content    string    `json:"content"`
-	Forwarded  bool      `json:"forwarded"`
-	Owner      string    `json:"user_id"`
-	Reply      int       `json:"reply"`
-	Media      int       `json:"photo_id"`
+	Message_id string `json:"message_id"`
+	Chat_id    int    `json:"chat_id"`
+	Status     int    `json:"status"`
+	Content    string `json:"content"`
+	Forwarded  int    `json:"forwarded"`
+	Owner      string `json:"user_id"`
+	Reply      int    `json:"reply"`
+	Media      int    `json:"photo_id"`
+	Date       string `json:"date"`
 }
 
 type ChangeUserId struct {

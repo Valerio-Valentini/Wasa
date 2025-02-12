@@ -54,12 +54,12 @@ type AppDatabase interface {
 	ReplyMessage(owner string, reply int, content string) error                                         // ok
 	DeleteMedia(user_id string, photo_id int, chat_id int) error                                        // ok
 	// ----------------------------------------------------- Reactions_Functions
-	ChangeReaction(owner string, reaction string, message string, chat_id string) error    // ok
+	ChangeReaction(owner string, reaction string, message string, chat_id string) error // ok
 	DeleteReaction(owner string, message string, chat_id string) error                  // ok
 	InsertReaction(owner string, reaction string, message string, chat_id string) error // ok
 	// ----------------------------------------------------- Users_Functions
 	ChangePhoto(user_id string, photo_id int) (int64, error) // ok
-	SearchUser(user_id string) ([]User, error)               // ok
+	SearchUser(user_id string, sender string) ([]User, error)               // ok
 	UpdateUser(user_id string, new_user_id string) error     // ok
 	InsertUser(username string) error                        // ok
 	VerifyUser(username string) (bool, error)                // ok
@@ -71,7 +71,7 @@ type AppDatabase interface {
 	GetIdGroupPicture(chat_id string) (int64, error)
 	CreateNewMediaId(user_id string) (int64, error)
 	NewChat(group bool, photo int, name string) (int64, error) // <--
-   }
+}
 
 type appdbimpl struct {
 	c *sql.DB
@@ -86,57 +86,64 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	var tables = [9]string{
 		`CREATE TABLE IF NOT EXISTS media_chat (
-		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		owner VARCHAR(16) NOT NULL,
-		chat_id INTEGER NOT NULL
+			photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			owner VARCHAR(16) NOT NULL,
+			chat_id INTEGER NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS profile_photo (
-		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		owner VARCHAR(16) NOT NULL
+			photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			owner VARCHAR(16) NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS group_photo (
-		photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		chat_id INTEGER(16) NOT NULL
+			photo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			chat_id INTEGER(16) NOT NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS users (
-		user_id VARCHAR(16) NOT NULL PRIMARY KEY,
-		photo_id INTEGER NOT NULL DEFAULT 0
+			user_id VARCHAR(16) NOT NULL PRIMARY KEY,
+			photo_id INTEGER NOT NULL DEFAULT 0
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat (
-		chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		is_group BOOLEAN NOT NULL,
-		chat_photo INTEGER NOT NULL DEFAULT 0,
-		chat_name VARCHAR(20) DEFAULT 'A chat'
+			chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			is_group BOOLEAN NOT NULL,
+			chat_photo INTEGER NOT NULL DEFAULT 0,
+			chat_name VARCHAR(20) DEFAULT 'A chat'
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat_members (
-		user_id VARCHAR(16) NOT NULL,
-		chat_id  INTEGER NOT NULL
+			user_id VARCHAR(16) NOT NULL,
+			chat_id INTEGER NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
+			PRIMARY KEY (user_id, chat_id)
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS messages (
-		message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		chat_id  INTEGER NOT NULL,
-		status VARCHAR(16),
-		date DATETIME DEFAULT CURRENT_TIMESTAMP,
-		owner VARCHAR(16) NOT NULL,
-		forwarded BOOLEAN NOT NULL,
-		reply INTEGER,
-		media INTEGER,
-		content VARCHAR(16)
+			message_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			chat_id INTEGER NOT NULL,
+			status INTEGER NOT NULL DEFAULT 0,
+			date DATETIME DEFAULT CURRENT_TIMESTAMP,
+			owner VARCHAR(16) NOT NULL,
+			forwarded INTEGER NOT NULL DEFAULT 0,
+			reply INTEGER NOT NULL DEFAULT 0,
+			media INTEGER NOT NULL DEFAULT -1,
+			content VARCHAR(16),
+			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
+			FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (reply) REFERENCES messages(message_id) ON DELETE SET NULL
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS message_reactions (
-		owner VARCHAR(16) NOT NULL,
-		reaction VARCHAR(16),
-		message_id INTEGER NOT NULL,
-		PRIMARY KEY (owner, message_id)
+			owner VARCHAR(16) NOT NULL,
+			reaction VARCHAR(16),
+			message_id INTEGER NOT NULL,
+			FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
+			PRIMARY KEY (owner, message_id)
 		);`,
-
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
