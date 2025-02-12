@@ -8,7 +8,7 @@ import (
 func (rt *_router) leaveChat(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	owner := r.Header.Get("Authorization")
-	member_id := ps.ByName("member_id") 		// QUI
+	member_id := ps.ByName("member_id") // QUI
 	if owner != member_id {
 		w.WriteHeader(http.StatusForbidden)
 		return

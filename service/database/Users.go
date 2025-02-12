@@ -43,8 +43,8 @@ func (db *appdbimpl) UpdateUser(user_id string, new_user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) SearchUser(user_id string) ([]User, error) {
-	rows, err := db.c.Query("SELECT * FROM users WHERE user_id LIKE ? ", user_id+"%") // QUI
+func (db *appdbimpl) SearchUser(user_id string, sender string) ([]User, error) {
+	rows, err := db.c.Query("SELECT * FROM users WHERE user_id LIKE ? AND user_id != ?", user_id+"%", sender)
 
 	if err != nil {
 		return nil, err

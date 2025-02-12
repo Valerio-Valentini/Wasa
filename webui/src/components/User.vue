@@ -1,25 +1,20 @@
 <template>
     <div class="user-item">
       <span class="user-name">{{ user.user_id }}</span>
-      <button class="btn btn-primary" @click="addToGroup">Add to Group</button>
-      <button class="btn btn-secondary" @click="chat">Chat</button>
+      <button class="btn btn-primary" :disabled="checkExistanceChat(user.user_id)" @click="chat">{{label}}</button>
     </div>
   </template>
   
   <script>
   export default {
-    props: {
-      user: {
-        type: Object,
-        required: true
-      }
-    },
+    props: ["user","chats", "label"],
     methods: {
-      addToGroup() {
-        this.$emit("add-to-group", this.user);
-      },
       chat() {
         this.$emit("chat", this.user);
+      },
+
+      checkExistanceChat(element){
+        return this.chats.some(chat => chat.Chat_name.split("-")[0]==element|| chat.Chat_name.split("-")[1]==element);
       }
     }
   };
