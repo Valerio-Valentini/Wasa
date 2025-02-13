@@ -28,28 +28,48 @@ func (db *appdbimpl) DeleteMessage(owner string, chat_id string, message_id stri
 	return nil
 }
 
-func (db *appdbimpl) ForwardMessage(owner string, chat1_id string, content string, chat2_id string) (int, error) {
+func (db *appdbimpl) ForwardMessage(owner string, chat1_id string, msg_id string, chat2_id string) (int, error) {
+	// Verify if user is a member of the original chat
 	res1, err := db.VerifyUserIsMamberOfChat(owner, chat1_id)
 	if err != nil {
 		return -1, err
 	}
 	if !res1 {
-		return -1, errors.New("User Is Not A Member")
+		return -1, errors.New("User is not a member of the original chat")
 	}
+
+	// Verify if user is a member of the target chat
 	res2, err := db.VerifyUserIsMamberOfChat(owner, chat2_id)
 	if err != nil {
 		return -1, err
 	}
 	if !res2 {
-		return -1, errors.New("User Is Not A Member")
+		return -1, errors.New("User is not a member of the target chat")
 	}
 
-	_, err = db.c.Exec("INSERT INTO messages (owner, content, chat_id, forwarded) VALUES (?, ?,?,?)", owner, content, chat2_id, true)
+	var content string
+	err = db.c.QueryRow("SELECT content FROM messages WHERE message_id = ? AND chat_id = ?", msg_id, chat1_id).
+		Scan(&content)
 	if err != nil {
 		return -1, err
 	}
 
-	return 1, nil
+	result, err := db.c.Exec(`
+		INSERT INTO messages (chat_id, owner, forwarded, content) 
+		VALUES (?, ?, ?, ?)`,
+		chat2_id, owner, 1, content)
+
+	if err != nil {
+		return -1, err
+	}
+
+	// Return the newly inserted message ID
+	insertedID, err := result.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+
+	return int(insertedID), nil
 }
 
 func (db *appdbimpl) ReplyMessage(owner string, reply int, content string) error {

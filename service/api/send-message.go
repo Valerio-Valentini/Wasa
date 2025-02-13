@@ -17,8 +17,6 @@ func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httpro
 	var message Message
 	err := json.NewDecoder(r.Body).Decode(&message)
 	if err != nil {
-		// fmt.Println("ERRORE IN SEND MESSAGE")
-		// fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

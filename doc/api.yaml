@@ -322,7 +322,30 @@ paths:
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/message_id"
       - $ref: "#/components/parameters/reaction_id"
-      
+    get:
+      tags: ["message"]
+      summary: Get reactions for a message
+      description: Retrieve all reactions for a specific message
+      operationId: getMessageReactions
+      responses:
+        '200':
+          description: Successfully retrieved reactions for the message
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/reaction"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
     put:
       tags: ["message"]
       summary: comment a message
@@ -362,6 +385,8 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
   
   /chats/{chat_id}/forwarded/{message_id}:
     parameters:
@@ -793,11 +818,3 @@ components:
       bearerAuth:
         type: http
         scheme: bearer
-            
-            
-            
-            
-            
-            
-            
-            

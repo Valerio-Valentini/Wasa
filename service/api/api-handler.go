@@ -23,6 +23,7 @@ func (rt *_router) Handler() http.Handler {
 	// MESSAGE
 	rt.router.POST("/chats/:chat_id/messages", rt.sendmessage)                                       // ok +
 	rt.router.DELETE("/chats/:chat_id/messages/:message_id", rt.deleteMessage)                       // ok +
+	rt.router.GET("/chats/:chat_id/messages/:message_id/reaction", rt.getMessageReactions)           // ok +
 	rt.router.PUT("/chats/:chat_id/messages/:message_id/reaction/:reaction_id", rt.commentMessage)   // ok +
 	rt.router.DELETE("/chats/:chat_id/messages/:message_id/reaction/:reaction_id", rt.deleteComment) // ok +
 	rt.router.POST("/chats/:chat_id/forwarded/:message_id", rt.forwardMessage)                       // ok +

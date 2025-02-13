@@ -1,51 +1,116 @@
 <template>
-  <div class="message" v-if="msg">
+  <div class="message" v-if="msg && chats">
     <div v-if="msg.forwarded" class="forwarded-label">>> Forwarded</div>
-    <div v-if="msg.reply !== 0" class="reply-preview">
-      {{ messages.find(m => m.message_id === msg.reply) || "Replied message not found" }}
+    <div v-if="!msg.forwarded && msg.reply !== 0" class="reply-preview" style="background-color:blanchedalmond">
+      <div class="row">
+        <p class="text-left ms-2 mt-2">Replied to</p>
+      </div>
+      <div class="row">
+        <p class="text-left ms-2 mt-2">{{ messages.find(m => m.message_id == msg.reply)?.content ?? "Deleted message"
+          }}
+        </p>
+      </div>
     </div>
-    <div class="message-info" v-if="!msg.forwarded">
-      <span class="user-id me-2">{{ msg.user_id }}</span>
-      <span class="message-date">{{ formatDate(msg.date) }}</span>
-    </div>
+
     <div class="message-content">
       {{ msg.content }}
     </div>
 
-    <div class="reactions">
+    <div class="reactions mt-4">
       <button v-for="(reaction, index) in reactions" :key="reaction" @click="addReaction(reaction)"
-        :class="{ 'selected-reaction': reaction === selectedReaction, 'hovered': true }">
+        :class="{ 'selected-reaction': selectedReaction && reaction == selectedReaction.reaction && msg.message_id == selectedReaction.message_id, 'col-3 btn btn-light btn-sm': true }">
         {{ emoji[index] }}
       </button>
     </div>
-    <div class="message-actions" v-if="!msg.forwarded && msg.reply === 0">
-      <button class="btn btn-info" style="color: white;" @click="replyToMessage">Reply</button>
-      <button class="btn btn-success" @click="forwardMessage">Forward</button>
+    <div class="mt-1 hover-box" v-if="reactionsUsers" @click="showReactionsPopup = !showReactionsPopup">
+      <p style="font-style: italic;">Total reactions: {{ reactionsUsers.length }}</p>
     </div>
-    <div class="div">
-      <button class="btn btn-danger" @click="deleteMessage">Delete message</button>
+
+    <!-- Popup for listing reactions -->
+    <div v-if="showReactionsPopup" class="popup-overlay">
+      <div class="popup-content">
+        <h6>Reactions</h6>
+
+        <div class="row" v-for="reaction in reactionsUsers" :key="reaction.user">
+          <div class="col-12"> <strong>{{ reaction.owner }}:</strong> {{ emoji[reaction.reaction] }} </div>
+        </div>
+
+        <button class="btn btn-danger" @click="showReactionsPopup = false">Close</button>
+      </div>
+    </div>
+    <div class="row mt-2 mb-2"> <!--v-if="!msg.forwarded && msg.reply === 0"-->
+      <div class="col-4">
+        <button class="btn btn-info" style="color: white;" @click="showReplyPopup">Reply</button>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-success" @click="showForwardPopup">Forward</button>
+      </div>
+      <div class="col-4" v-if="this.identifier == this.msg.user_id">
+        <button class="btn btn-danger" @click="deleteMessage">Delete</button>
+      </div>
+    </div>
+
+    <div class="message-info text-center">
+      <span class="user-id me-2" v-if="!msg.forwarded">{{ msg.user_id }}</span>
+      <span class="message-date">{{ formatDate(msg.date) }}</span>
+    </div>
+    <div class="row mt-2">
+      <p class="text-end" style="font-style: italic;">{{ false ? 'Sent v' : 'Read w' }} </p>
+    </div>
+
+    <div v-if="showPopup2" class="popup">
+      <div class="popup-content">
+        <h3>Reply to this message</h3>
+        <div class="row">
+          <div class="col-12">
+            <input type="text" v-model="text" class="form-control" placeholder="Type a message..." />
+          </div>
+          <div class="col-12">
+            <button class="btn btn-info mt-2" :disabled="this.text.length == 0"
+              @click="replyToMessage(msg.message_id)">Send reply</button>
+          </div>
+        </div>
+        <button class="btn btn-danger mt-2" @click="closePopup2">Close</button>
+      </div>
+    </div>
+
+    <div v-if="showPopup" class="popup">
+      <div class="popup-content">
+        <h3>Select a chat to forward</h3>
+        <div class="row" v-for="chat in chats" :key="chat.chat_id">
+          <div class="col-7">
+            {{ chat.Chat_name }}
+          </div>
+          <div class="col-5">
+            <button class="btn btn-info" @click="forwardMessage(chat.first_chat_id)">Forward</button>
+          </div>
+        </div>
+        <button class="btn btn-danger" @click="closePopup">Close</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["msg", "messages", "identifier"],
+  props: ["msg", "messages", "identifier", "chats"],
   data() {
     return {
-      emoji: ["<3", ":)", ">:(", ":("],
+      emoji: ["<3", ":)", ">:|", ":("],
       reactions: [0, 1, 2, 3],
-      selectedReaction: -1,
+      selectedReaction: null,
       forwadedToChat: null,
-      text: ""
+      text: "",
+      showPopup: false,
+      showPopup2: false,
+      reactionsUsers: [],
+      showReactionsPopup: false
     };
   },
 
-  mounted() {
-    //load reaction
-    console.log("MSGGG", this.msg)
-    console.log("ALL MSGGG", this.messages)
-    console.log("identificaotre", this.identifier)
+  async mounted() {
+    await this.getReactions();
+
   },
 
   methods: {
@@ -54,82 +119,95 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', options);
     },
-    async replyToMessage() {
-      if (this.text.trim() !== "") {
-        try {
-          await this.$axios.post("/chats/" + this.msg.chat_id + "/messages", {
-            chat_id: this.msg.chat_id ,
-            content: this.text,
-            forwarded: 0,
-            reply: this.msg.message_id,
-          });
+    showForwardPopup() {
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    showReplyPopup() {
+      this.showPopup2 = true;
+    },
+    closePopup2() {
+      this.showPopup2 = false;
+    },
 
-          this.text = ""
-          this.$emit("sentMessage")
+    async getReactions() {
+      try {
+        const response = await this.$axios.get(`chats/${this.msg.chat_id}/messages/${this.msg.message_id}/reaction`);
+        this.reactionsUsers = response.data;
+
+        let r = null
+        if (this.reactionsUsers) { r = this.reactionsUsers.filter(u => u.owner == this.identifier) }
+        if (r) { this.selectedReaction = r[0] }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async addReaction(reaction) {
+      try {
+
+        if (this.selectedReaction && reaction == this.selectedReaction.reaction) {
+          await this.$axios.delete(`chats/${this.msg.chat_id}/messages/${this.msg.message_id}/reaction/${reaction}`);
+          this.selectedReaction = null;
+        } else if (this.selectedReaction && reaction != this.selectedReaction.reaction) {
+          await this.$axios.delete(`chats/${this.msg.chat_id}/messages/${this.msg.message_id}/reaction/${this.selectedReaction.reaction}`);
+          await this.$axios.put(`chats/${this.msg.chat_id}/messages/${this.msg.message_id}/reaction/${reaction}`);
+        } else {
+          await this.$axios.put(`chats/${this.msg.chat_id}/messages/${this.msg.message_id}/reaction/${reaction}`);
         }
-        catch (error) {
-          console.log(error)
-        }
+
+        await this.getReactions()
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async forwardMessage(chatId) {
+      try {
+        await this.$axios.post("/chats/" + chatId + "/forwarded/" + this.msg.message_id, {
+          chat_id: this.msg.chat_id.toString()
+        });
+        this.showPopup = false;
+        window.location.reload(); 
+      } catch (error) {
+        console.log(error);
       }
     },
 
     async deleteMessage() {
-        try {
-          await this.$axios.delete("/chats/" + this.msg.chat_id + "/messages"+ this.msg.message_id);
-          
-        }
-        catch (error) {
-          console.log(error)
-        }
-      
-    },
-    async forwardMessage() {
-      // this.$emit('forward', this.msg);
       try {
-        await this.$axios.post(("/chats/" + this.forwadedToChat + "/forwarded/" + this.msg.messagge_id), {
-          chat_name: this.editableChatName
-        })
-        this.selectedChat.Chat_name = this.editableChatName;
+        await this.$axios.delete("/chats/" + this.msg.chat_id + "/messages/" + this.msg.message_id);
+        window.location.reload(); 
 
-      } catch (error) {
-        console.log(error)
       }
-    },
-    addReaction(reaction) {
-      if (this.selectedReaction == reaction) {
-        //remove the reaction!
-        this.remReac(this.msg.message_id, this.selectedReaction.toString())
-      }
-
-      if (this.selectedReaction != -1 && this.selectedReaction != reaction) {
-        //remove original and put new reaction
-        this.remReac(this.msg.message_id, this.selectedReaction.toString())
-        this.addReac(this.msg.message_id, reaction.toString())
-      }
-    },
-
-
-    async addReac(msg_id, reaction) {
-      try {
-        await this.$axios.put(("/chats/" + chat_id + "/messages/" + msg_id + "/reaction/" + reaction))
-
-      } catch (error) {
+      catch (error) {
         console.log(error)
       }
     },
 
-    async remReac(msg_id, reaction) {
-      try {
-        await this.$axios.delete(("/chats/" + chat_id + "/messages/" + msg_id + "/reaction/" + reaction))
+    async replyToMessage(msg_id) {
 
-      } catch (error) {
+      try {
+        await this.$axios.post("/chats/" + this.msg.chat_id + "/messages", {
+          chat_id: this.msg.chat_id,
+          content: this.text,
+          forwarded: 0,
+          reply: parseInt(msg_id),
+        });
+
+        this.text = "";
+        this.showPopup2 = false;
+        window.location.reload(); 
+
+      }
+      catch (error) {
         console.log(error)
       }
     }
-
-
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
@@ -174,16 +252,12 @@ export default {
   color: #000;
 }
 
-.message-actions {
-  margin-top: 10px;
-}
 
 .reactions {
   margin-top: 5px;
 }
 
 button {
-  background-color: transparent;
   border: none;
   cursor: pointer;
   font-size: 14px;
@@ -196,5 +270,20 @@ button {
 
 button.selected-reaction {
   background-color: yellow;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(187, 187, 187);
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.popup-content {
+  text-align: center;
 }
 </style>

@@ -19,8 +19,7 @@
                         <div class="card-body chat-messages">
                             <p v-if="!messages || messages.length === 0" class="text-muted">No messages yet...</p>
                             <Message v-for="(msg, _) in messages" :key="msg.message_id" :msg="msg" :messages="messages"
-                                :identifier="this.identifier" />
-                            <!--@reply="handleReply" @forward="handleForward" @reaction-added="handleReactionAdded"-->
+                                :identifier="this.identifier" :chats="this.chats" />
                         </div>
                     </div>
                 </div>
@@ -44,12 +43,13 @@
                     <input v-model="editableChatName" class="form-control mb-2" placeholder="Chat Name"
                         v-if="selectedChat.Chat_group">
 
-                    <h6 v-if="selectedChat.Chat_group">>Members:</h6>
+                    <!--<h6 v-if="selectedChat.Chat_group">Add Members:</h6>
                     <ul class="list-group mb-2" v-if="selectedChat.Chat_group">
                         <li v-for="(member, index) in selectedChat.members" :key="index" class="list-group-item">
                             {{ member }}
                         </li>
                     </ul>
+                    -->
 
                     <div class="input-group mb-2" v-if="selectedChat.Chat_group">
                         <input v-model="newMember" type="text" class="form-control" placeholder="Add a member..." />
@@ -74,7 +74,7 @@
 
 <script>
 export default {
-    props: ["selectedChat", "identifier", "messages"],
+    props: ["selectedChat", "identifier", "messages", "chats"],
 
     data() {
         return {
@@ -98,7 +98,7 @@ export default {
         async sendMessage() {
             if (this.newMessage.trim() !== "") {
                 try {
-                    let response = await this.$axios.post("/chats/" + this.chat_id + "/messages", {
+                    await this.$axios.post("/chats/" + this.chat_id + "/messages", {
                         chat_id: this.selectedChat.first_chat_id,
                         content: this.newMessage,
                         forwarded: 0,
@@ -106,6 +106,7 @@ export default {
                     });
 
                     this.newMessage = ""
+                    this.$emit("newMsg")
                     this.$emit("sentMessage")
                 }
                 catch (error) {
@@ -116,10 +117,11 @@ export default {
 
         async loadMessage() {
             try {
-                let response = await this.$axios.get("/users/" + this.identifier + "/chats/" + this.selectedChat.first_chat_id, {
-                });
-
-                this.messages = response.data.messages
+                if (this.selectedChat) {
+                    await this.$axios.get("/users/" + this.identifier + "/chats/" + this.selectedChat.first_chat_id, {
+                    });
+                }
+                //this.messages = response.data.messages // FIXXXX
             }
             catch (error) {
                 console.log(error)
@@ -130,22 +132,29 @@ export default {
         async addMember() {
             if (this.newMember.trim() !== "") {
                 try {
-                    await this.$axios.put(("/chats/" + chat_id + "/members/" + this.newMember))
-                    this.selectedChat.members.push(this.newMember);
+                    let res = await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id + "/members/" + this.newMember))
+                    alert("You added " + this.newMember)
                     this.newMember = "";
 
                 } catch (error) {
-                    console.log(error)
+                    if (error.response.status == 404) {
+                        alert(this.newMember + " doesn't exist!")
+                        this.newMember = "";
+                    } else {
+                        console.log(error)
+                    }
                 }
             }
         },
         async saveChatName() {
             if (this.editableChatName.trim() !== "") {
                 try {
-                    await this.$axios.put(("/chats/" + chat_id),{
+                    await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id), {
                         chat_name: this.editableChatName
                     })
                     this.selectedChat.Chat_name = this.editableChatName;
+
+                    localStorage.setItem("selectedChat", JSON.stringify(this.selectedChat))
 
                 } catch (error) {
                     console.log(error)
@@ -160,6 +169,8 @@ export default {
                 await this.$axios.delete(("/chats/" + this.selectedChat.first_chat_id + "/members/" + this.identifier))
                 alert("You left the chat!")
                 this.showInfoModal = false;
+                localStorage.removeItem("selectedChat")
+                window.location.reload(); 
             } catch (error) {
                 console.log(error)
             }
@@ -167,7 +178,6 @@ export default {
     },
 
     async mounted() {
-        console.log("INFO SELECT CAHT ", this.selectedChat)
         await this.loadMessage();
     }
 };

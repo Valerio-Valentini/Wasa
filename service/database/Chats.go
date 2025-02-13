@@ -40,12 +40,18 @@ func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
 }
 
 func (db *appdbimpl) AddMember(chat_id string, user_id string) error {
-	_, err := db.c.Exec("INSERT INTO chat_members (chat_id, user_id) VALUES (?,?)", chat_id, user_id)
+	var exists bool
+	err := db.c.QueryRow("SELECT EXISTS (SELECT 1 FROM chat_members WHERE chat_id = ? AND user_id = ?)", chat_id, user_id).Scan(&exists)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	if exists {
+		return nil // Member already exists, so do nothing
+	}
+
+	_, err = db.c.Exec("INSERT INTO chat_members (chat_id, user_id) VALUES (?, ?)", chat_id, user_id)
+	return err
 }
 
 func (db *appdbimpl) LeaveChat(chat_id string, user_id string) error {

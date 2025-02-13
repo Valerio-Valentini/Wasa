@@ -54,15 +54,16 @@ type AppDatabase interface {
 	ReplyMessage(owner string, reply int, content string) error                                         // ok
 	DeleteMedia(user_id string, photo_id int, chat_id int) error                                        // ok
 	// ----------------------------------------------------- Reactions_Functions
+	GetMessageReactions(message_id string) ([]Reaction, error)
 	ChangeReaction(owner string, reaction string, message string, chat_id string) error // ok
 	DeleteReaction(owner string, message string, chat_id string) error                  // ok
 	InsertReaction(owner string, reaction string, message string, chat_id string) error // ok
 	// ----------------------------------------------------- Users_Functions
-	ChangePhoto(user_id string, photo_id int) (int64, error) // ok
-	SearchUser(user_id string, sender string) ([]User, error)               // ok
-	UpdateUser(user_id string, new_user_id string) error     // ok
-	InsertUser(username string) error                        // ok
-	VerifyUser(username string) (bool, error)                // ok
+	ChangePhoto(user_id string, photo_id int) (int64, error)  // ok
+	SearchUser(user_id string, sender string) ([]User, error) // ok
+	UpdateUser(user_id string, new_user_id string) error      // ok
+	InsertUser(username string) error                         // ok
+	VerifyUser(username string) (bool, error)                 // ok
 	VerifyUserIsMamberOfChat(user_id string, chat_id string) (bool, error)
 	GetIdProfilePicture(user_id string) (int64, error)
 	CreateNewId(user_id string) (int64, error)

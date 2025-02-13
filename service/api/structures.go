@@ -29,12 +29,6 @@ type UserChatCombo struct {
 	Chat_id int64  `json:"chat_id"`
 }
 
-type Reaction struct {
-	Message_id int    `json:"message_id"`
-	Owner      string `json:"user_id"`
-	Reaction   string `json:"reaction"`
-}
-
 type ForwardedMessage struct {
 	Message_id string    `json:"message_id"`
 	Chat_id    int       `json:"first_chat_id"`

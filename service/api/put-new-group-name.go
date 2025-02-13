@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -25,7 +25,7 @@ func (rt *_router) putNewGroupName(w http.ResponseWriter, r *http.Request, ps ht
 
 	owner := strings.Split(r.Header.Get("Authorization"), " ")[1]
 
-	err = rt.db.SetGroupName(owner, chat_id , values.Chat_name)
+	err = rt.db.SetGroupName(owner, chat_id, values.Chat_name)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"strings"
 )
 
 func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	type IncomingChat struct {
-		Chat_id string `json:"chats"`
+		Original_chat_id string `json:"chat_id"`
 	}
 	var original_chat IncomingChat
 	err := json.NewDecoder(r.Body).Decode(&original_chat)
@@ -17,9 +18,10 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	owner := r.Header.Get("Authorization")
+
+	owner := strings.Split(r.Header.Get("Authorization"), " ")[1]
 	id, err := rt.db.ForwardMessage(owner,
-		original_chat.Chat_id,
+		original_chat.Original_chat_id,
 		ps.ByName("message_id"),
 		ps.ByName("chat_id"))
 	if err != nil {
