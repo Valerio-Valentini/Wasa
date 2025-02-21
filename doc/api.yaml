@@ -285,6 +285,38 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
+          
+  /chats/{chat_id}/messages/{message_id}/status:
+    parameters:
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
+    put:
+      tags: ["message"]
+      summary: determinates status of a message
+      description: determinates if the message has been read
+      operationId: setStatus
+      requestBody:
+        description: data to identify message, owner and chat
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/status_identifier'
+        required: true
+            
+      responses:
+        '201':
+          $ref: '#/components/responses/operation_successfull'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+          
+      security:
+        - bearerAuth: []
         
   /chats/{chat_id}/messages:
     parameters:
@@ -736,6 +768,18 @@ components:
           example: blue
         owner:
           $ref: "#/components/schemas/user_nickname/properties/nickname"
+          
+    status_identifier:
+      description: data to identify a status
+      type: object
+      properties:
+        message_id:
+            $ref: "#/components/schemas/message/properties/message_id"
+        owner:
+            $ref: "#/components/schemas/user_nickname/properties/nickname"
+        chat_id: 
+            $ref: "#/components/schemas/message/properties/message_id"
+        
         
     group_name:
       description: It's a group's name
