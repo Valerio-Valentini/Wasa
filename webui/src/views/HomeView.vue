@@ -23,6 +23,10 @@ export default {
             this.$router.push("/createGroup")
         },
 
+        goToChangeNick() {
+            this.$router.push("/changeNick")
+        },
+
         async search() {
             try {
                 let response = await this.$axios.get("/users", {
@@ -179,8 +183,8 @@ export default {
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" style="font-style: italic; font-weight: bold;"
-                                    aria-current="page">{{ identifier }}</a>
+                                <button class="nav-link" style="font-style: italic; font-weight: bold;"
+                                    aria-current="page" @click="goToChangeNick">{{ identifier }}</button>
                             </li>
                             <li class="nav-item me-2">
                                 <button class="btn btn-danger" @click="logout">LogOut</button>

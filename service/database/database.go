@@ -107,6 +107,16 @@ func New(db *sql.DB) (AppDatabase, error) {
 			photo_id INTEGER NOT NULL DEFAULT 0
 		);`,
 
+		`CREATE TABLE IF NOT EXISTS messages_status (
+			user_id VARCHAR(16) NOT NULL,
+			chat_id INTEGER NOT NULL DEFAULT 0,
+			message_id INTEGER NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
+			FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
+			PRIMARY KEY (user_id, chat_id, message_id)
+		);`,
+
 		`CREATE TABLE IF NOT EXISTS chat (
 			chat_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			is_group BOOLEAN NOT NULL,
@@ -117,7 +127,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		`CREATE TABLE IF NOT EXISTS chat_members (
 			user_id VARCHAR(16) NOT NULL,
 			chat_id INTEGER NOT NULL,
-			FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
 			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
 			PRIMARY KEY (user_id, chat_id)
 		);`,
@@ -133,7 +143,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			media INTEGER NOT NULL DEFAULT -1,
 			content VARCHAR(16),
 			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
-			FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (owner) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
 			FOREIGN KEY (reply) REFERENCES messages(message_id) ON DELETE SET NULL
 		);`,
 
@@ -141,7 +151,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			owner VARCHAR(16) NOT NULL,
 			reaction VARCHAR(16) DEFAULT '-1',
 			message_id INTEGER NOT NULL,
-			FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE,
+			FOREIGN KEY (owner) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
 			FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
 			PRIMARY KEY (owner, message_id)
 		);`,
