@@ -21,6 +21,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/chats/:chat_id", rt.putNewGroupName)                 // ok +
 	rt.router.DELETE("/chats/:chat_id/members/:member_id", rt.leaveChat) // ok +
 	// MESSAGE
+	rt.router.PUT("/chats/:chat_id/messages/:message_id/status", rt.updateStatus)                    // qui
 	rt.router.POST("/chats/:chat_id/messages", rt.sendmessage)                                       // ok +
 	rt.router.DELETE("/chats/:chat_id/messages/:message_id", rt.deleteMessage)                       // ok +
 	rt.router.GET("/chats/:chat_id/messages/:message_id/reaction", rt.getMessageReactions)           // ok +

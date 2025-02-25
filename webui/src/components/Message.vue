@@ -54,8 +54,8 @@
       <span class="user-id me-2" v-if="!msg.forwarded">{{ msg.user_id }}</span>
       <span class="message-date">{{ formatDate(msg.date) }}</span>
     </div>
-    <div class="row mt-2">
-      <p class="text-end" style="font-style: italic;">{{ false ? 'Sent v' : 'Read w' }} </p>
+    <div class="row mt-2" v-if=" msg.user_id == identifier">
+      <p class="text-end" style="font-style: italic;">{{ !msg.status ? 'Sent v' : 'Read w' }} </p>
     </div>
 
     <div v-if="showPopup2" class="popup">
@@ -76,7 +76,22 @@
 
     <div v-if="showPopup" class="popup">
       <div class="popup-content">
-        <h3>Select a chat to forward</h3>
+        <h6 class="font-weight-bold">Select a user to forward</h6>
+          <form class="d-flex mb-3" role="search">
+            <input class="form-control me-2" type="search" placeholder="@username" v-model="userToForward">
+                <button class="btn btn-outline-success" type="submit"
+                  :disabled="!this.userToForward || this.userToForward.trim().length == 0"
+                  @click="getUsers">Search</button>
+          </form>
+          <div class="row" v-for="(user, index) in foundUsers">
+              <div class="col-6">
+                {{ user.user_id}}
+              </div>
+              <div class="col-6">
+                <button class="btn btn-info" @click="forwardMessage(chat.first_chat_id)">Forward</button>
+              </div>
+          </div>
+        <h6 class="font-weight-bold">Select a chat to forward</h6>
         <div class="row" v-for="chat in chats" :key="chat.chat_id">
           <div class="col-7">
             {{ chat.Chat_name }}
@@ -104,7 +119,9 @@ export default {
       showPopup: false,
       showPopup2: false,
       reactionsUsers: [],
-      showReactionsPopup: false
+      showReactionsPopup: false,
+      userToForward: "",
+      foundUsers : null,
     };
   },
 
@@ -143,6 +160,21 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async getUsers() {
+      try {
+            let response = await this.$axios.get("/users", {
+              params: {
+                 user_id: this.userToForward.trim()
+              }
+                });
+                this.foundUsers = response.data
+                this.userToForward = ""
+            }
+            catch (error) {
+                console.log(error)
+            }
     },
 
     async addReaction(reaction) {

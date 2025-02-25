@@ -82,9 +82,26 @@ export default {
                 });
 
                 this.messages = response.data.messages
+                if(this.messages.length >= 1) {
+                    this.updateStatus(this.messages[this.messages.length-1].message_id)
+                }
+                
 
             }
             catch (error) {
+                console.log(error)
+            }
+        },
+
+        async updateStatus(message_id) {
+            try {
+                await this.$axios.put("/chats/" + this.chatSelected.first_chat_id + "/messages/" + message_id + "/status", {
+                    user_id: this.identifier,
+                    message_id: message_id.toString(),
+                    chat_id: this.chatSelected.first_chat_id.toString()
+                }) 
+            }
+            catch(error) {
                 console.log(error)
             }
         },

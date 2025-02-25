@@ -46,6 +46,7 @@ type AppDatabase interface {
 	UpdateGroupPhoto(chat_id int, photo_id int) (int64, error)   // ok
 	SetGroupName(user_id string, chat_id int, name string) error // ok
 	// ----------------------------------------------------- Messages_Functions
+	UpdateMessageStatus(user_id string, chat_id string, message_id string) error // DA QUI
 	GetMessagesFromChat(chat_id string) ([]Message, error)                                              // ok
 	SendMedia(chat_id int, owner string, content string) (int64, error)                                 // ok
 	SendMessage(chat_id int, owner string, message Message) (int64, error)                              // ok
@@ -114,7 +115,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
 			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
 			FOREIGN KEY (message_id) REFERENCES messages(message_id) ON DELETE CASCADE,
-			PRIMARY KEY (user_id, chat_id, message_id)
+			PRIMARY KEY (user_id, chat_id)
 		);`,
 
 		`CREATE TABLE IF NOT EXISTS chat (

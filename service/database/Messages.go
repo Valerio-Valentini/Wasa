@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (int64, error) {
@@ -143,6 +144,34 @@ func (db *appdbimpl) DeleteMedia(owner string, photo_id int, chat_id int) error 
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+func (db *appdbimpl) UpdateMessageStatus(user_id string, chat_id string, message_id string) error {
+	var presence int
+	err := db.c.QueryRow("SELECT COUNT(*) FROM messages_status WHERE user_id = ? AND chat_id = ?", user_id, chat_id).Scan(&presence)
+	if err != nil {
+		return err
+	}
+	if(presence > 0) {
+		_, err := db.c.Exec("UPDATE messages_status SET message_id = ? WHERE user_id = ? AND chat_id = ?", message_id, user_id, chat_id)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = db.c.Exec("INSERT INTO messages_status (user_id, chat_id, message_id) VALUES (?,?,?)", user_id, chat_id, message_id)
+		if err != nil {
+			return err
+		}
+	}
+	var message string
+	err = db.c.QueryRow("SELECT MIN(message_id) FROM messages_status WHERE chat_id = ?", chat_id).Scan(&message)
+	if err != nil {
+		return err
+	}
+	_, err = db.c.Exec("UPDATE messages SET status = 1 WHERE message_id <= ?", message)
+	if err != nil {
+		return err
+	}
 	return nil
 }
