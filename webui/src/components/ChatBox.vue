@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card chat-header d-flex justify-content-between align-items-center p-3">
-                        <h5 class="mb-0">{{ getChatName2(selectedChat.Chat_name.split("-")) }}</h5>
+                        <h5 class="mb-0">{{ selectedChat }} </h5>
                         <button class="btn btn-light btn-sm" @click="openInfo">Info</button>
                     </div>
                 </div>
@@ -115,19 +115,6 @@ export default {
             }
         },
 
-        async loadMessage() {
-            try {
-                if (this.selectedChat) {
-                    await this.$axios.get("/users/" + this.identifier + "/chats/" + this.selectedChat.first_chat_id, {
-                    });
-                }
-                //this.messages = response.data.messages // FIXXXX
-            }
-            catch (error) {
-                console.log(error)
-            }
-        },
-
 
         async addMember() {
             if (this.newMember.trim() !== "") {
@@ -152,7 +139,7 @@ export default {
                     await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id), {
                         chat_name: this.editableChatName
                     })
-                    this.selectedChat.Chat_name = this.editableChatName;
+                    this.selectedChat.chat_name = this.editableChatName;
 
                     localStorage.setItem("selectedChat", JSON.stringify(this.selectedChat))
 
@@ -182,7 +169,8 @@ export default {
     },
 
     async mounted() {
-        await this.loadMessage();
+        // await this.loadMessage();
+        console.log("--->", this.selectedChat)
     }
 };
 </script>

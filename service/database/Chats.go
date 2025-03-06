@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"strconv"
+	"database/sql"
 )
 
 func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
@@ -80,7 +81,7 @@ func (db *appdbimpl) LeaveChat(chat_id string, user_id string) error {
 	return nil
 }
 
-func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
+func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 	rows, err := db.c.Query("SELECT chat_id FROM chat_members WHERE user_id = ? ", user_id)
 	if err != nil {
 		return nil, err
@@ -88,16 +89,25 @@ func (db *appdbimpl) GetChats(user_id string) ([]Chat, error) {
 
 	defer func() { _ = rows.Close() }()
 
-	var chats []Chat
+	var chats []ChatPreview
 	for rows.Next() {
 		var id int
-		var chat Chat
+		var chat ChatPreview
 		err = rows.Scan(&id)
 		if err != nil {
 			return nil, err
 		}
 		err = db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
+			return nil, err
+		}
+		err = db.c.QueryRow("SELECT owner, content FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview)
+		if err == sql.ErrNoRows {
+			chat.Preview = ""
+			chat.Owner = ""
+		}
+		if err != nil && err !=sql.ErrNoRows {
+			
 			return nil, err
 		}
 		chats = append(chats, chat)

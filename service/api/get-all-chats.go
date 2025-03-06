@@ -17,10 +17,10 @@ func (rt *_router) getAllChats(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	type Response struct {
-		Chats []database.Chat `json:"chats"`
+		Chats []database.ChatPreview `json:"chats"`
 	}
 	if chats == nil {
-		chats = []database.Chat{}
+		chats = []database.ChatPreview{}
 	}
 	_ = json.NewEncoder(w).Encode(Response{Chats: chats})
 }

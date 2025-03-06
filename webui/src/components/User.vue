@@ -14,7 +14,7 @@
       },
 
       checkExistanceChat(element){
-        return this.chats.some(chat => chat.Chat_name.split("-")[0]==element|| chat.Chat_name.split("-")[1]==element);
+        return this.chats.some(chat => chat.chat_name.split("-")[0]==element|| chat.chat_name.split("-")[1]==element);
       }
     }
   };

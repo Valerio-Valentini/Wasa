@@ -54,3 +54,12 @@ type Reaction struct {
 	Reaction  string `json:"reaction"`
 	Messageid string `json:"message_id"`
 }
+
+type ChatPreview struct {
+	Owner string `json:"owner"`
+	Preview string `json:"preview"`
+	Chat_id    int `json:"first_chat_id"`
+	Chat_group bool `json:"chat_group"`
+	Chat_photo int `json:"chat_photo"`
+	Chat_name  string `json:"chat_name"`
+}

@@ -129,24 +129,6 @@ export default {
             }
         },
 
-        async getNewLastMsg(chat_id) {
-            try {
-                if (chat_id) {
-
-                    let response = await this.$axios.get("/users/" + this.identifier + "/chats/" + chat_id, {
-                    });
-
-                    let arr = response.data.messages
-                    if (arr.length > 0) arr = arr[arr.length - 1]
-                    console.log(">>", arr.content)
-                    return arr.content
-                }
-            }
-            catch (error) {
-                console.log(error)
-            }
-        },
-
         async loadLastMessages() {
             this.lastMsgPerChat = [];
             for (var chat in this.chats) {
@@ -192,11 +174,10 @@ export default {
     },
 
     async mounted() {
-        await this.update_chats();
         await this.loadLastMessages()
         this.selectedChatHandler(JSON.parse(localStorage.getItem("selectedChat")))
-
-
+        setInterval(async () => {await this.update_chats()}, 4000)
+        setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected.first_chat_id)}, 4000)
 
     },
 
@@ -275,14 +256,15 @@ export default {
 
                         <!--{{ util1(chat) }}-->    
                         <div class="row" style="font-weight: bolder;">
-                            {{ getChatName(chat.Chat_name.split("-")) }}
+                            {{ getChatName(chat.chat_name.split("-")) }}
+                        </div>
+                         <div class="row" style="font-style: italic;">
+                         >> {{ chat.preview }}
                         </div>
                         <div class="row" style="font-style: italic;">
-                         >> {{ getNewLastMsg(chat.first_chat_id) }}
+                            {{ chat.owner }}
                         </div>
-                        <div class="row" style="font-style: italic;">
-                            {{ formatDate(lastMsgPerChat.find(msg => msg.chat_id === chat.first_chat_id)?.date) }}
-                        </div>
+                        
                     </a>
                 </div>
             </div>
