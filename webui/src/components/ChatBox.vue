@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card chat-header d-flex justify-content-between align-items-center p-3">
-                        <h5 class="mb-0">{{ selectedChat }} </h5>
+                        <h5 class="mb-0">{{ getChatName2(selectedChat) }} </h5>
                         <button class="btn btn-light btn-sm" @click="openInfo">Info</button>
                     </div>
                 </div>
@@ -90,7 +90,11 @@ export default {
             this.showInfoModal = true
         },
 
-        getChatName2(vector) {
+        getChatName2(name) {
+            if(!name) return ""
+            console.log("-------->", name)
+            let vector = name.chat_name.split("-")
+            if (vector.length == 1) return vector[0]
             if (this.identifier == vector[0]) return vector[1]
             return vector[0]
         },

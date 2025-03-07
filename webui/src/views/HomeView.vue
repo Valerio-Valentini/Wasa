@@ -73,17 +73,19 @@ export default {
             }
         },
 
-        async selectedChatHandler(pickedChat) {
+        async selectedChatHandler(pickedChat, x) {
             try {
                 if (pickedChat) {
+                    console.log("->", pickedChat, x)
                     this.chatSelected = pickedChat;
                     localStorage.setItem("selectedChat", JSON.stringify(pickedChat))
                 }
+                
                 let response = await this.$axios.get("/users/" + this.identifier + "/chats/" + this.chatSelected.first_chat_id, {
                 });
 
                 this.messages = response.data.messages
-                if(this.messages.length >= 1) {
+                if(this.messages && this.messages.length >= 1) {
                     this.updateStatus(this.messages[this.messages.length-1].message_id)
                 }
                 
@@ -175,7 +177,7 @@ export default {
 
     async mounted() {
         await this.loadLastMessages()
-        this.selectedChatHandler(JSON.parse(localStorage.getItem("selectedChat")))
+        // this.selectedChatHandler(JSON.parse(localStorage.getItem("selectedChat")))
         setInterval(async () => {await this.update_chats()}, 4000)
         setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected.first_chat_id)}, 4000)
 
@@ -252,7 +254,7 @@ export default {
             <div class="col-4">
                 <div class="list-group">
                     <a class="list-group-item list-group-item-action hover-box" v-for="(chat, index) in chats"
-                        :key="index" @click="selectedChatHandler(chat)">
+                        :key="index" @click="selectedChatHandler(chat, index)">
 
                         <!--{{ util1(chat) }}-->    
                         <div class="row" style="font-weight: bolder;">
@@ -268,6 +270,7 @@ export default {
                     </a>
                 </div>
             </div>
+            {{ chatSelected }}
             <ChatBox @sentMessage="selectedChatHandler" :selectedChat="this.chatSelected" :identifier="this.identifier"
                 :messages="this.messages" :chats="this.chats" @newMsg="loadLastMessages" @newMessage="update_chats"/>
         </div>
