@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card chat-header d-flex justify-content-between align-items-center p-3">
-                        <h5 class="mb-0">{{ getChatName2(selectedChat) }} </h5>
+                        <h5 class="mb-0">{{ getChatName2(selectedChat.chat_name.split("-")) }} </h5>
                         <button class="btn btn-light btn-sm" @click="openInfo">Info</button>
                     </div>
                 </div>
@@ -90,10 +90,7 @@ export default {
             this.showInfoModal = true
         },
 
-        getChatName2(name) {
-            if(!name) return ""
-            console.log("-------->", name)
-            let vector = name.chat_name.split("-")
+        getChatName2(vector) {
             if (vector.length == 1) return vector[0]
             if (this.identifier == vector[0]) return vector[1]
             return vector[0]
@@ -123,7 +120,7 @@ export default {
         async addMember() {
             if (this.newMember.trim() !== "") {
                 try {
-                    let res = await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id + "/members/" + this.newMember))
+                    await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id + "/members/" + this.newMember))
                     alert("You added " + this.newMember)
                     this.newMember = "";
 
@@ -145,7 +142,7 @@ export default {
                     })
                     this.selectedChat.chat_name = this.editableChatName;
 
-                    localStorage.setItem("selectedChat", JSON.stringify(this.selectedChat))
+                    //localStorage.setItem("selectedChat", JSON.stringify(this.selectedChat))
 
                 } catch (error) {
                     console.log(error)
@@ -171,11 +168,6 @@ export default {
             this.$emit("newMessage")
         }
     },
-
-    async mounted() {
-        // await this.loadMessage();
-        console.log("--->", this.selectedChat)
-    }
 };
 </script>
 

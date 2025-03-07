@@ -66,17 +66,15 @@ export default {
                 },
                 )
                 this.chats = response.data.chats
-                console.log(this.chats)
             }
             catch (error) {
                 console.log(error)
             }
         },
 
-        async selectedChatHandler(pickedChat, x) {
+        async selectedChatHandler(pickedChat) {
             try {
                 if (pickedChat) {
-                    console.log("->", pickedChat, x)
                     this.chatSelected = pickedChat;
                     localStorage.setItem("selectedChat", JSON.stringify(pickedChat))
                 }
@@ -114,41 +112,14 @@ export default {
             return vector[0]
         },
 
-        async getLastMsg(chat_id) {
-            try {
-                if (chat_id) {
-
-                    let response = await this.$axios.get("/users/" + this.identifier + "/chats/" + this.chatSelected.first_chat_id, {
-                    });
-
-                    let arr = response.data.messages
-                    if (arr.length > 0) arr = arr[arr.length - 1]
-                    return arr
-                }
-            }
-            catch (error) {
-                console.log(error)
-            }
-        },
-
-        async loadLastMessages() {
-            this.lastMsgPerChat = [];
-            for (var chat in this.chats) {
-                let x = await this.getLastMsg(this.chats[chat].first_chat_id);
-                if (!x) continue
-                this.lastMsgPerChat.push(x)
-            }
-        },
-
         truncateString(str, maxLength = 10) {
             return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
         },
         formatDate(isoString) {
             const date = new Date(isoString);
 
-            // Check if the date is valid by checking if getTime() is NaN
             if (isNaN(date.getTime())) {
-                return ''; // Return empty string if invalid date
+                return '';
             }
 
             return date.toLocaleString('en-US', {
@@ -161,25 +132,12 @@ export default {
                 hour12: true
             });
         },
-
-        util1(chat) {
-            let messageContent = " ";
-            for (let i = 0; i < this.lastMsgPerChat.length; i++) {
-                if (this.lastMsgPerChat[i].chat_id === chat.first_chat_id) {
-                    messageContent = this.lastMsgPerChat[i].content;
-                    return messageContent;
-                }
-            }
-            return messageContent;
-        }
-
     },
 
-    async mounted() {
-        await this.loadLastMessages()
-        // this.selectedChatHandler(JSON.parse(localStorage.getItem("selectedChat")))
+    mounted() {
+        this.selectedChat = localStorage.getItem("selectedChat")
         setInterval(async () => {await this.update_chats()}, 4000)
-        setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected.first_chat_id)}, 4000)
+        setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected)}, 4000)
 
     },
 
@@ -254,9 +212,8 @@ export default {
             <div class="col-4">
                 <div class="list-group">
                     <a class="list-group-item list-group-item-action hover-box" v-for="(chat, index) in chats"
-                        :key="index" @click="selectedChatHandler(chat, index)">
-
-                        <!--{{ util1(chat) }}-->    
+                        :key="index" @click="selectedChatHandler(chat)">
+  
                         <div class="row" style="font-weight: bolder;">
                             {{ getChatName(chat.chat_name.split("-")) }}
                         </div>
@@ -270,9 +227,8 @@ export default {
                     </a>
                 </div>
             </div>
-            {{ chatSelected }}
             <ChatBox @sentMessage="selectedChatHandler" :selectedChat="this.chatSelected" :identifier="this.identifier"
-                :messages="this.messages" :chats="this.chats" @newMsg="loadLastMessages" @newMessage="update_chats"/>
+                :messages="this.messages" :chats="this.chats" @newMessage="update_chats"/> <!--@newMsg="loadLastMessages"-->
         </div>
     </div>
 </template>
