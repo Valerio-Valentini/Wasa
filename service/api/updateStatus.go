@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strings"
@@ -29,10 +28,9 @@ func (rt *_router) updateStatus(w http.ResponseWriter, r *http.Request, ps httpr
 		// fmt.Println(err)
 		return
 	}
-	err = rt.db.UpdateMessageStatus(Data.User_id, Data.Chat_id, Data.Message_id)
+	err = rt.db.UpdateMessageStatus(user, Data.Chat_id, Data.Message_id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
 		return
 	}
 }

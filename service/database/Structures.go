@@ -62,4 +62,5 @@ type ChatPreview struct {
 	Chat_group bool `json:"chat_group"`
 	Chat_photo int `json:"chat_photo"`
 	Chat_name  string `json:"chat_name"`
+	Date string `json:"chat_date"`
 }

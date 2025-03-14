@@ -2,10 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strings"
+	"path/filepath"
+	"os"
 )
 
 func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -35,11 +36,14 @@ func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps
 
 	err = rt.db.UpdateUser(user, nick.User_id)
 	if err != nil {
-		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
+	err = os.Rename(filepath.Join("/tmp/media", pathUser), filepath.Join("/tmp/media", nick.User_id))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	/*
 			// var user ChangeUserId
 		// MODIFICA PRENDERE USER DA HEADER

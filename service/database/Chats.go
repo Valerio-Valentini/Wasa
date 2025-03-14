@@ -101,10 +101,11 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = db.c.QueryRow("SELECT owner, content FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview)
+		err = db.c.QueryRow("SELECT owner, content, date FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview, &chat.Date)
 		if err == sql.ErrNoRows {
 			chat.Preview = ""
 			chat.Owner = ""
+			chat.Date = ""
 		}
 		if err != nil && err !=sql.ErrNoRows {
 			

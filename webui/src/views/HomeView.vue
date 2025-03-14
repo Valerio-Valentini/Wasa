@@ -8,7 +8,7 @@ export default {
             foundUsers: [],
             chatSelected: null,
             messages: [],
-            lastMsgPerChat: []
+            lastMsgPerChat: [],
         }
     },
 
@@ -159,6 +159,9 @@ export default {
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
+                            <li class="navbar-nav">
+                                <img id="photo" :src="'http://localhost:3000/users/' + identifier + '/photo'">
+                            </li>
                             <li class="nav-item">
                                 <button class="nav-link" style="font-style: italic; font-weight: bold;"
                                     aria-current="page" @click="goToChangeNick">{{ identifier }}</button>
@@ -213,16 +216,28 @@ export default {
                 <div class="list-group">
                     <a class="list-group-item list-group-item-action hover-box" v-for="(chat, index) in chats"
                         :key="index" @click="selectedChatHandler(chat)">
-  
+        
                         <div class="row" style="font-weight: bolder;">
-                            {{ getChatName(chat.chat_name.split("-")) }}
+                            <div class="col-4">
+                                <img id="photo" v-if="chat.chat_group" :src="'http://localhost:3000/chats/' + chat.first_chat_id + '/photo'">
+                                <img id="photo" v-else :src="'http://localhost:3000/users/' + getChatName(chat.chat_name.split('-')) + '/photo'">
+                            </div>
+                            <div class="col-8">
+                                {{ getChatName(chat.chat_name.split("-")) }}
+                            </div>
                         </div>
                          <div class="row" style="font-style: italic;">
-                         >> {{ chat.preview }}
+                            <div class="col-6">
+                                >> {{ chat.preview }}
+                            </div>
+                            <div class="col-6">
+                                {{ chat.chat_date }}
+                            </div>
                         </div>
                         <div class="row" style="font-style: italic;">
                             {{ chat.owner }}
                         </div>
+        
                         
                     </a>
                 </div>
@@ -234,6 +249,11 @@ export default {
 </template>
 
 <style>
+#photo {
+    height: 30px;
+    width: 30;
+}
+
 #spc {
     height: 730px;
     margin-top: 10px;

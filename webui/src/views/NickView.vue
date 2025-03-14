@@ -19,6 +19,21 @@ export default {
             catch (error) {
                 console.log(error)
             }
+        },
+
+        async uploadFile() {
+            let fileInput = document.getElementById("fileUploader")
+            console.log(fileInput)
+            const file = fileInput.files[0]
+            const reader = new FileReader()
+            reader.readAsArrayBuffer(file)
+            reader.onload = async () => {
+                await this.$axios.put("/users/" + this.identifier + "/photo", reader.result, {
+                    headers: {
+                        "Content-Type": file.type
+                    }
+                })
+            }
         }
     },
 
@@ -36,7 +51,17 @@ export default {
                 </div>    
         </div>
         <div class="row">
-            <button type="button" class="btn btn-primary" @click="changeUsername">Primary</button>
+            <button type="button" class="btn btn-primary" @click="changeUsername">Update Username
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="input-group flex-nowrap">
+                <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
+                <label class="btn" @click="uploadFile">
+                    Update Photo
+                </label>
+                </div>    
         </div>
     </div>
 </template>

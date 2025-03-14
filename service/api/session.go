@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -32,6 +34,11 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		// ctx.Logger.WithError(err).Error("session: can't create response json")
+		return
+	}
+	err = os.MkdirAll(filepath.Join("/tmp/media", user.User_id), os.ModePerm)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)

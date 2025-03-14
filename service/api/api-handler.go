@@ -9,6 +9,7 @@ func (rt *_router) Handler() http.Handler {
 	// USER
 	rt.router.PUT("/users/:user_id", rt.putNewUserNickname)    // ok +
 	rt.router.PUT("/users/:user_id/photo", rt.putNewUserPhoto) // notok +
+	rt.router.GET("/users/:user_id/photo", rt.getProfilePhoto)
 	// SEARCH
 	rt.router.GET("/users", rt.searchUser) // ok +
 	// CHAT
@@ -17,6 +18,7 @@ func (rt *_router) Handler() http.Handler {
 	// GROUP
 	rt.router.PUT("/chats", rt.createNewChat)                            // ok +
 	rt.router.PUT("/chats/:chat_id/photo", rt.putNewGroupPhoto)          // notok +
+	rt.router.GET("/chats/:chat_id/photo", rt.getGroupPhoto)
 	rt.router.PUT("/chats/:chat_id/members/:member_id", rt.addAMember)   // ok +
 	rt.router.PUT("/chats/:chat_id", rt.putNewGroupName)                 // ok +
 	rt.router.DELETE("/chats/:chat_id/members/:member_id", rt.leaveChat) // ok +

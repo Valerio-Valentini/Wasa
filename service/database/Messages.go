@@ -168,9 +168,21 @@ func (db *appdbimpl) UpdateMessageStatus(user_id string, chat_id string, message
 	if err != nil {
 		return err
 	}
-	_, err = db.c.Exec("UPDATE messages SET status = 1 WHERE message_id <= ?", message)
+	var membri_letto int
+	var membri_tot int
+	err = db.c.QueryRow("SELECT COUNT(*) FROM messages_status WHERE chat_id = ?", chat_id).Scan(&membri_letto)
 	if err != nil {
 		return err
+	}
+	err = db.c.QueryRow("SELECT COUNT(*) FROM chat_members WHERE chat_id = ?", chat_id).Scan(&membri_tot)
+	if err != nil {
+		return err
+	}
+	if(membri_letto == membri_tot) {
+		_, err = db.c.Exec("UPDATE messages SET status = 1 WHERE message_id <= ?", message)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
