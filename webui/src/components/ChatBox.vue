@@ -8,6 +8,10 @@
                     <div class="card chat-header d-flex justify-content-between align-items-center p-3">
                         <h5 class="mb-0">{{ getChatName2(selectedChat.chat_name.split("-")) }} </h5>
                         <button class="btn btn-light btn-sm" @click="openInfo">Info</button>
+                        <div>
+                        <img  v-if="selectedChat.chat_group" id="photo" :src="'http://localhost:3000/chats/' + selectedChat.first_chat_id + '/photo'">
+                        <img v-else id="photo" :src="'http://localhost:3000/users/' + getChatName2(selectedChat.chat_name.split('-')) + '/photo'">
+                    </div>
                     </div>
                 </div>
             </div>
@@ -16,10 +20,25 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card chat-box">
+                        <div v-if="showImagePopUp" class="popup-overlay custom">
+                            <div class="popup-content">
+                                <div class="input-group flex-nowrap">
+                                    <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
+                                    <button class="btn btn-primary" @click="uploadFile">
+                                         Send Photo
+                                    </button>
+                                </div>    
+                                <button class="btn btn-danger" @click="showImagePopUp = false">Close</button>
+                            </div>
+                        </div>
                         <div class="card-body chat-messages">
                             <p v-if="!messages || messages.length === 0" class="text-muted">No messages yet...</p>
-                            <Message v-for="(msg, _) in messages" :key="msg.message_id" :msg="msg" :messages="messages"
+                            <div v-else class="row" v-for="(msg, _) in messages">
+                                <Message v-if="msg.media == -1" :key="msg.message_id" :msg="msg" :messages="messages"
                                 :identifier="this.identifier" :chats="this.chats" @newMessage="sendNewChat"/>
+                                <MediaMessage v-else :key="msg.message_id +1" :msg="msg" :messages="messages"
+                                :identifier="this.identifier" :chats="this.chats" @newMessage="sendNewChat"/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -29,6 +48,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="input-group chat-input">
+                        <button @click="showImagePopUp = true" class="btn btn-primary">+</button>
                         <input type="text" v-model="newMessage" class="form-control" placeholder="Type a message..."
                             @keyup.enter="sendMessage" />
                         <span class="input-group-text send-btn" @click="sendMessage">Send</span>
@@ -81,7 +101,9 @@ export default {
             newMessage: "",
             showInfoModal: false,
             editableChatName: "",
-            newMember: ""
+            newMember: "",
+            showImagePopUp: false
+
         };
     },
     methods: {
@@ -166,6 +188,33 @@ export default {
 
         sendNewChat() {
             this.$emit("newMessage")
+        },
+
+        async uploadFile() {
+            let fileInput = document.getElementById("fileUploader")
+            console.log(fileInput)
+            const file = fileInput.files[0]
+            const reader = new FileReader()
+            reader.readAsArrayBuffer(file)
+            // /chats/:chat_id/media
+            reader.onload = async () => {
+                let response = await this.$axios.post("/chats/" + this.selectedChat.first_chat_id + "/media", reader.result, {
+                    headers: {
+                        "Content-Type": file.type
+                    }
+                })
+                let photo_id = response.data.photo_id
+                await this.$axios.post("/chats/" + this.selectedChat.first_chat_id + "/messages", {
+                        chat_id: this.selectedChat.first_chat_id,
+                        content: this.newMessage,
+                        forwarded: 0,
+                        reply: 0,
+                        photo_id: parseInt(photo_id, 10),
+                    });
+                    this.$emit("newMsg")
+                    this.$emit("sentMessage")
+
+            }
         }
     },
 };
@@ -238,5 +287,12 @@ export default {
     border-radius: 10px;
     width: 300px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.custom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: gray;
 }
 </style>

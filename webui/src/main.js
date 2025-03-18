@@ -7,6 +7,7 @@ import LoadingSpinner from './components/LoadingSpinner.vue'
 import User from './components/User.vue'
 import ChatBox from './components/ChatBox.vue';
 import Message from './components/Message.vue';
+import MediaMessage from './components/MediaMessage.vue';
 
 import './assets/dashboard.css'
 import './assets/main.css'
@@ -17,6 +18,7 @@ app.component("ErrorMsg", ErrorMsg);
 app.component("LoadingSpinner", LoadingSpinner);
 app.component("UserItem", User);
 app.component("ChatBox", ChatBox);
-app.component("Message", Message)
+app.component("Message", Message);
+app.component("MediaMessage", MediaMessage);
 app.use(router)
 app.mount('#app')

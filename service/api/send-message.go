@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"fmt"
 )
 
 func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -18,6 +19,7 @@ func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httpro
 	err := json.NewDecoder(r.Body).Decode(&message)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
 		return
 	}
 
@@ -30,6 +32,7 @@ func (rt *_router) sendmessage(w http.ResponseWriter, r *http.Request, ps httpro
 			Forwarded:  message.Forwarded,
 			Owner:      owner,
 			Reply:      message.Reply,
+			Media: 		message.Media,
 		})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

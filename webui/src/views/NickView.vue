@@ -61,7 +61,7 @@ export default {
                 <label class="btn" @click="uploadFile">
                     Update Photo
                 </label>
-                </div>    
+            </div>    
         </div>
     </div>
 </template>

@@ -5,8 +5,8 @@ import (
 )
 
 func (db *appdbimpl) SendMessage(chat_id int, owner string, message Message) (int64, error) {
-	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, forwarded, reply) VALUES (?, ?, ?, ?, ?)",
-		chat_id, owner, message.Content, message.Forwarded, message.Reply)
+	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content, forwarded, reply, media) VALUES (?, ?, ?, ?, ?, ?)",
+		chat_id, owner, message.Content, message.Forwarded, message.Reply, message.Media)
 	if err != nil {
 		return -1, err
 	}
@@ -124,18 +124,18 @@ func (db *appdbimpl) GetMessagesFromChat(chat_id string) ([]Message, error) {
 	return messages, nil
 }
 
-func (db *appdbimpl) SendMedia(chat_id int, owner string, content string) (int64, error) {
-	res, err := db.c.Exec("INSERT INTO messages (chat_id, owner, content) VALUES (?,?,?)", chat_id, owner, content)
+func (db *appdbimpl) SendMedia(chat_id string, owner string) (int64, error) {
+	res, err := db.c.Exec("INSERT INTO media_chat (chat_id, owner) VALUES (?,?)", chat_id, owner)
 	if err != nil {
 		return -1, err
 	}
 
-	message_id, err := res.LastInsertId()
+	photo_id, err := res.LastInsertId()
 	if err != nil {
 		return -1, err
 	}
 
-	return message_id, nil
+	return photo_id, nil
 }
 
 func (db *appdbimpl) DeleteMedia(owner string, photo_id int, chat_id int) error {

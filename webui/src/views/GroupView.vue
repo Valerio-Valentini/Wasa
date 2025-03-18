@@ -5,7 +5,8 @@ export default {
             searchUser: null,
             foundUsers2: [],
             toAddToGroup: [],
-            groupName: ""
+            groupName: "",
+            id: ""
         };
     },
 
@@ -62,13 +63,29 @@ export default {
 
                 this.toAddToGroup = [];
                 this.searchUser = null;
-                this.groupName= ""
+                this.groupName= "";
+                this.id = chat_id
 
             }
             catch (error) {
                 console.log(error)
             }
             alert("Group created!");
+        },
+
+        async uploadFile() {
+            let fileInput = document.getElementById("fileUploader")
+            const file = fileInput.files[0]
+            const reader = new FileReader()
+            reader.readAsArrayBuffer(file)
+            console.log(file)
+            reader.onload = async () => {
+                await this.$axios.put("/chats/" + this.id + "/photo", reader.result, {
+                    headers: {
+                        "Content-Type": file.type
+                    }
+                })
+            }
         }
     },
 
@@ -114,10 +131,17 @@ export default {
                     {{ user }}
                 </li>
             </ul>
-        </div>
+        </div>  
 
         <div class="mt-4">
             <button class="btn btn-primary w-100" :disabled="!groupName.trim() || toAddToGroup.length === 0" @click="createGroup">Create Group</button>
+        </div>
+
+        <div class="input-group flex-nowrap">
+                <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
+                <label class="btn" @click="uploadFile">
+                    Update Photo
+                </label>
         </div>
     </div>
 </template>

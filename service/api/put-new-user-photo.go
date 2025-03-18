@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"path/filepath"
+	"path/filepath" 
 )
 
 func (rt *_router) putNewUserPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

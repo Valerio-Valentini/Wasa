@@ -8,13 +8,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"fmt"
+	"path/filepath"
+	"encoding/json"
 )
 
 func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	aut := r.Header.Get("Authorization")
 	valori := strings.Split(aut, " ")
-	user_id := valori[0]
+	user_id := valori[1]
 
+	/*
 	w.Header().Set("Content-Type", "application/json")
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -46,4 +50,57 @@ func (rt *_router) sendMedia(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 	out.Close()
 	w.WriteHeader(http.StatusOK)
+	*/
+
+	w.Header().Set("Content-Type", "application/json")
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("1")
+		fmt.Println(err)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	r.Body = io.NopCloser(bytes.NewBuffer(data))
+	path := filepath.Join("/tmp/media", ps.ByName("chat_id"), "tmp.jpg")
+	// creare file
+	out, err := os.Create(path)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("2")
+		fmt.Println(err)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	fmt.Println(path)
+	_, err = io.Copy(out, r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("3")
+		fmt.Println(err)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	id, err := rt.db.SendMedia(ps.ByName("chat_id"), user_id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("4")
+		fmt.Println(err)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	err = os.Rename(path, filepath.Join("/tmp/media", ps.ByName("chat_id"), fmt.Sprintf("%d.jpg", id)))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("5")
+		fmt.Println(err)
+		return
+	}
+	defer out.Close()
+	w.WriteHeader(http.StatusCreated) // risposta
+	type Resp struct {
+		Resp string `json:"photo_id"`
+	}
+	answ := strconv.FormatInt(id, 10)
+	_ = json.NewEncoder(w).Encode(Resp{Resp: answ})
 }

@@ -6,15 +6,18 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
-	"strings"
+	// "strconv"
+	// "strings"
+	"path/filepath"
+	"fmt"
 )
 
 func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	aut := r.Header.Get("Authorization")
-	valori := strings.Split(aut, " ")
-	chat_id := valori[0]
+	// aut := r.Header.Get("Authorization")
+	// valori := strings.Split(aut, " ")
+	// chat_id := valori[1]
 
+	/*
 	w.Header().Set("Content-Type", "application/json")
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -65,5 +68,37 @@ func (rt *_router) putNewGroupPhoto(w http.ResponseWriter, r *http.Request, ps h
 	}
 	out.Close()
 	w.WriteHeader(http.StatusOK)
+
+	*/
+
+	w.Header().Set("Content-Type", "application/json")
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	r.Body = io.NopCloser(bytes.NewBuffer(data))
+	path := filepath.Join("/tmp/media", ps.ByName("chat_id"), "1.jpg")
+	_, err = os.Stat(path)
+	if err == nil {
+		os.Remove(path)
+	}
+	// creare file
+	out, err := os.Create(path)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	fmt.Println(path)
+	_, err = io.Copy(out, r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
+		return
+	}
+	out.Close()
+	w.WriteHeader(http.StatusOK) // risposta
 
 }

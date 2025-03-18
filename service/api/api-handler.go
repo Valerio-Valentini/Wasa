@@ -31,7 +31,8 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/chats/:chat_id/messages/:message_id/reaction/:reaction_id", rt.deleteComment) // ok +
 	rt.router.POST("/chats/:chat_id/forwarded/:message_id", rt.forwardMessage)                       // ok +
 	// MEDIA
-	rt.router.POST("/chats/:chat_id/media/:media_id", rt.sendMedia)     // notok -
+	rt.router.POST("/chats/:chat_id/media", rt.sendMedia)     // notok - MODIFICA API
+	rt.router.GET("/chats/:chat_id/media/:media_id", rt.getMedia) // MODFICA API
 	rt.router.DELETE("/chats/:chat_id/media/:media_id", rt.deleteMedia) // notok -
 	// LOGIN
 	rt.router.POST("/session", rt.session) // ok +

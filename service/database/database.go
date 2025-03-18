@@ -48,7 +48,7 @@ type AppDatabase interface {
 	// ----------------------------------------------------- Messages_Functions
 	UpdateMessageStatus(user_id string, chat_id string, message_id string) error // DA QUI
 	GetMessagesFromChat(chat_id string) ([]Message, error)                                              // ok
-	SendMedia(chat_id int, owner string, content string) (int64, error)                                 // ok
+	SendMedia(chat_id string, owner string) (int64, error)                                 // ok
 	SendMessage(chat_id int, owner string, message Message) (int64, error)                              // ok
 	DeleteMessage(owner string, chat_id string, message_id string) error                                // ok
 	ForwardMessage(owner string, chat1_id string, original_msg_id string, chat2_id string) (int, error) // ok
@@ -143,6 +143,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			reply INTEGER NOT NULL DEFAULT -1,
 			media INTEGER NOT NULL DEFAULT -1,
 			content VARCHAR(16),
+			FOREIGN KEY (media) REFERENCES media_chat(photo_id) ON DELETE CASCADE,
 			FOREIGN KEY (chat_id) REFERENCES chat(chat_id) ON DELETE CASCADE,
 			FOREIGN KEY (owner) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
 			FOREIGN KEY (reply) REFERENCES messages(message_id) ON DELETE SET NULL
