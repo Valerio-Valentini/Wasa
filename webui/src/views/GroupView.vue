@@ -66,6 +66,8 @@ export default {
                 this.groupName= "";
                 this.id = chat_id
 
+                this.uploadFile()
+
             }
             catch (error) {
                 console.log(error)
@@ -75,6 +77,9 @@ export default {
 
         async uploadFile() {
             let fileInput = document.getElementById("fileUploader")
+            if(fileInput.files.length == 0) {
+                return
+            }
             const file = fileInput.files[0]
             const reader = new FileReader()
             reader.readAsArrayBuffer(file)
@@ -133,16 +138,14 @@ export default {
             </ul>
         </div>  
 
+        <div class="input-group flex-nowrap">
+                <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
+        </div>
+
         <div class="mt-4">
             <button class="btn btn-primary w-100" :disabled="!groupName.trim() || toAddToGroup.length === 0" @click="createGroup">Create Group</button>
         </div>
 
-        <div class="input-group flex-nowrap">
-                <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
-                <label class="btn" @click="uploadFile">
-                    Update Photo
-                </label>
-        </div>
     </div>
 </template>
 

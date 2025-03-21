@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"database/sql"
+	"strings"
 )
 
 func (db *appdbimpl) StartChat(group bool, members []string) (int64, error) {
@@ -95,12 +96,27 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 		var chat ChatPreview
 		err = rows.Scan(&id)
 		if err != nil {
-			return nil, err
+			return nil, err 
 		}
 		err = db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
 			return nil, err
 		}
+		var users []string
+		rows, err = db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", id)
+		if err != nil {
+			return nil, err
+		}
+		for rows.Next() {
+			var user string
+			err = rows.Scan(&user)
+			if err != nil {
+				return nil, err
+			}
+			users = append(users, user)
+		}
+		allUsers := strings.Join(users, "-")
+		chat.Members = allUsers
 		err = db.c.QueryRow("SELECT owner, content, date FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview, &chat.Date)
 		if err == sql.ErrNoRows {
 			chat.Preview = ""

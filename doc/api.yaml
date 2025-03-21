@@ -66,6 +66,34 @@ paths:
           $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: []
+
+  /users/{user_id}:
+    parameters:
+      - $ref: "#/components/parameters/identifier"
+    put:
+      tags: ["user"]
+      summary: Modifies the user's nickname
+      description: Modifies the user's nickname
+      operationId: setMyUserName
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user_nickname"
+            example:
+              nickname: "Nome"
+        required: true
+      responses:
+        '204':
+          $ref: "#/components/responses/no_content"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: [] 
         
   /chats: 
     put:
@@ -117,6 +145,25 @@ paths:
           $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: [] 
+    get:
+      get:
+      tags: ["user"]
+      summary: retrieves an user's photo
+      description: get the user's photo
+      operationId: getMyPhoto
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
         
   /users/{user_id}/chats:
     parameters:
@@ -167,6 +214,25 @@ paths:
           $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: []
+    get:
+      get:
+      tags: ["group"]
+      summary: retrieves a group's photo
+      description: get group photo
+      operationId: getGroupPhoto
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
         
   /chats/{chat_id}/members/{member_id}:
     parameters:
@@ -191,7 +257,6 @@ paths:
           
       security:
         - bearerAuth: []
-        
     delete:
       tags: ["group"]
       summary: leave a group
@@ -348,12 +413,11 @@ paths:
           
       security:
         - bearerAuth: []
-          
-  /chats/{chat_id}/messages/{message_id}/reaction/{reaction_id}:
+
+  /chats/{chat_id}/messages/{message_id}/reaction:
     parameters:
       - $ref: "#/components/parameters/chat_id"
       - $ref: "#/components/parameters/message_id"
-      - $ref: "#/components/parameters/reaction_id"
     get:
       tags: ["message"]
       summary: Get reactions for a message
@@ -378,6 +442,12 @@ paths:
           $ref: "#/components/responses/internal_server_error"
       security:
         - bearerAuth: []
+          
+  /chats/{chat_id}/messages/{message_id}/reaction/{reaction_id}:
+    parameters:
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/message_id"
+      - $ref: "#/components/parameters/reaction_id"
     put:
       tags: ["message"]
       summary: comment a message
@@ -451,11 +521,11 @@ paths:
           
       security:
         - bearerAuth: []
-        
-  /chats/{chat_id}/media/{media_id}:
+
+
+  /chats/{chat_id}/media:
     parameters:
       - $ref: "#/components/parameters/chat_id"
-      - $ref: "#/components/parameters/media_id"
     post:
       tags: ["media"]
       summary: send a photo
@@ -468,7 +538,6 @@ paths:
             schema:
               $ref: '#/components/schemas/photo'
         required: true
-      
       responses:
         '201':
           $ref: '#/components/responses/operation_successfull'
@@ -479,10 +548,14 @@ paths:
         '404':
           $ref: "#/components/responses/not_found"
         '500':
-          $ref: "#/components/responses/internal_server_error"
-          
+          $ref: "#/components/responses/internal_server_error" 
       security:
         - bearerAuth: []
+        
+  /chats/{chat_id}/media/{media_id}:
+    parameters:
+      - $ref: "#/components/parameters/chat_id"
+      - $ref: "#/components/parameters/media_id"
     delete:
       tags: ["media"]
       summary: delete a photo
@@ -499,6 +572,26 @@ paths:
           $ref: "#/components/responses/not_found"
         '500':
           $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
+    get:
+      tags: ["media"]
+      summary: Get media 
+      description: Retrieves media from chat
+      operationId: getMedia
+      responses:
+        '200':
+          $ref: "#/components/responses/stream"
+        '401':
+          $ref: "#/components/responses/unauthorized"
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: "#/components/responses/not_found"
+        '500':
+          $ref: "#/components/responses/internal_server_error"
+      security:
+        - bearerAuth: []
           
 #================================
   

@@ -83,7 +83,7 @@
                   :disabled="!this.userToForward || this.userToForward.trim().length == 0"
                   @click="getUsers">Search</button>
           </form>
-          <div class="row" v-for="(user, index) in foundUsers">
+          <div class="row" v-for="(user, index) in foundUsers" :key="index">
               <div class="col-6">
                 {{ user.user_id}}
               </div>

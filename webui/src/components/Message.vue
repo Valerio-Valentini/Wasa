@@ -83,7 +83,7 @@
                   :disabled="!this.userToForward || this.userToForward.trim().length == 0"
                   @click="getUsers">Search</button>
           </form>
-          <div class="row" v-for="(user, index) in foundUsers">
+          <div class="row" v-for="(user, index) in foundUsers" :key="index">
               <div class="col-6">
                 {{ user.user_id}}
               </div>
@@ -94,7 +94,7 @@
         <h6 class="font-weight-bold">Select a chat to forward</h6>
         <div class="row" v-for="chat in chats" :key="chat.chat_id">
           <div class="col-7">
-            {{ chat.Chat_name }}
+            {{ getChatName(chat.chat_name.split("-")) }}
           </div>
           <div class="col-5">
             <button class="btn btn-info" @click="forwardMessage(chat.first_chat_id)">Forward</button>
@@ -214,7 +214,7 @@ export default {
       try {
         var trovato = false
         for(const chat of this.chats) {
-          let cn = chat.Chat_name.split("-")
+          let cn = chat.chat_name.split("-")
           if(cn.length>1 && (cn[0] == user_id || cn[1] == user_id)) {
             console.log("qui--->",chat)
             this.forwardMessage(chat.first_chat_id)
@@ -248,6 +248,11 @@ export default {
         console.log(error)
       }
     },
+
+    getChatName(vector) {
+            if (this.identifier === vector[0]) return vector[1]
+            return vector[0]
+        },
 
     async replyToMessage(msg_id) {
 

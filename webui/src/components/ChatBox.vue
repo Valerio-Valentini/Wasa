@@ -9,8 +9,8 @@
                         <h5 class="mb-0">{{ getChatName2(selectedChat.chat_name.split("-")) }} </h5>
                         <button class="btn btn-light btn-sm" @click="openInfo">Info</button>
                         <div>
-                        <img  v-if="selectedChat.chat_group" id="photo" :src="'http://localhost:3000/chats/' + selectedChat.first_chat_id + '/photo'">
-                        <img v-else id="photo" :src="'http://localhost:3000/users/' + getChatName2(selectedChat.chat_name.split('-')) + '/photo'">
+                        <img  v-if="selectedChat.chat_group" id="photo" :src="source + '/chats/' + selectedChat.first_chat_id + '/photo'">
+                        <img v-else id="photo" :src="source + '/users/' + getChatName2(selectedChat.chat_name.split('-')) + '/photo'">
                     </div>
                     </div>
                 </div>
@@ -33,8 +33,8 @@
                         </div>
                         <div class="card-body chat-messages">
                             <p v-if="!messages || messages.length === 0" class="text-muted">No messages yet...</p>
-                            <div v-else class="row" v-for="(msg, _) in messages">
-                                <Message v-if="msg.media == -1" :key="msg.message_id" :msg="msg" :messages="messages"
+                            <div v-else class="row" v-for="(msg, i) in messages" :key="i"> 
+                                <Message v-if="msg.photo_id == -1" :key="msg.message_id" :msg="msg" :messages="messages"
                                 :identifier="this.identifier" :chats="this.chats" @newMessage="sendNewChat"/>
                                 <MediaMessage v-else :key="msg.message_id +1" :msg="msg" :messages="messages"
                                 :identifier="this.identifier" :chats="this.chats" @newMessage="sendNewChat"/>
@@ -59,19 +59,19 @@
             <!-- Info Modal -->
             <div v-if="showInfoModal" class="overlay">
                 <div class="modal-content">
-                    <h5 v-if="selectedChat.Chat_group">Edit Chat Info</h5>
+                    <h5 v-if="this.selectedChat.chat_group">Edit Chat Info</h5>
                     <input v-model="editableChatName" class="form-control mb-2" placeholder="Chat Name"
-                        v-if="selectedChat.Chat_group">
+                        v-if="this.selectedChat.chat_group">
 
-                    <!--<h6 v-if="selectedChat.Chat_group">Add Members:</h6>
-                    <ul class="list-group mb-2" v-if="selectedChat.Chat_group">
-                        <li v-for="(member, index) in selectedChat.members" :key="index" class="list-group-item">
+                    <h6 v-if="this.selectedChat.chat_group">Members:</h6>
+                    <ul class="list-group mb-2" v-if="this.selectedChat.chat_group">
+                        <li v-for="(member, index) in this.selectedChat.chat_members.split('-')" :key="index" class="list-group-item">
                             {{ member }}
                         </li>
                     </ul>
-                    -->
 
-                    <div class="input-group mb-2" v-if="selectedChat.Chat_group">
+                    <h6 v-if="this.selectedChat.chat_group">Add Members:</h6>
+                    <div class="input-group mb-2" v-if="this.selectedChat.chat_group">
                         <input v-model="newMember" type="text" class="form-control" placeholder="Add a member..." />
                         <button class="btn btn-primary" @click="addMember">+</button>
                     </div>
@@ -83,7 +83,7 @@
                     <div class="d-flex justify-content-between">
                         <button class="btn btn-danger" @click="showInfoModal = false">Close</button>
                         <button class="btn btn-success" @click="saveChatName"
-                            v-if="selectedChat.Chat_group">Save</button>
+                            v-if="this.selectedChat.chat_group">Save</button>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,8 @@ export default {
             showInfoModal: false,
             editableChatName: "",
             newMember: "",
-            showImagePopUp: false
+            showImagePopUp: false,
+            source: __API_URL__
 
         };
     },
@@ -110,6 +111,7 @@ export default {
 
         openInfo() {
             this.showInfoModal = true
+            console.log(this.selectedChat)
         },
 
         getChatName2(vector) {
@@ -126,6 +128,7 @@ export default {
                         content: this.newMessage,
                         forwarded: 0,
                         reply: 0,
+                        photo_id: -1,
                     });
 
                     this.newMessage = ""
@@ -162,7 +165,7 @@ export default {
                     await this.$axios.put(("/chats/" + this.selectedChat.first_chat_id), {
                         chat_name: this.editableChatName
                     })
-                    this.selectedChat.chat_name = this.editableChatName;
+                    // this.selectedChat.chat_name = this.editableChatName;
 
                     //localStorage.setItem("selectedChat", JSON.stringify(this.selectedChat))
 

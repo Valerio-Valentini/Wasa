@@ -9,6 +9,7 @@ export default {
             chatSelected: null,
             messages: [],
             lastMsgPerChat: [],
+            source: __API_URL__,
         }
     },
 
@@ -160,7 +161,7 @@ export default {
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
                             <li class="navbar-nav">
-                                <img id="photo" :src="'http://localhost:3000/users/' + identifier + '/photo'">
+                                <img id="photo" :src="source + '/users/' + this.identifier + '/photo'">
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link" style="font-style: italic; font-weight: bold;"
@@ -219,8 +220,8 @@ export default {
         
                         <div class="row" style="font-weight: bolder;">
                             <div class="col-4">
-                                <img id="photo" v-if="chat.chat_group" :src="'http://localhost:3000/chats/' + chat.first_chat_id + '/photo'">
-                                <img id="photo" v-else :src="'http://localhost:3000/users/' + getChatName(chat.chat_name.split('-')) + '/photo'">
+                                <img id="photo" v-if="chat.chat_group" :src="source + '/chats/' + chat.first_chat_id + '/photo'">
+                                <img id="photo" v-else :src="source + '/users/' + getChatName(chat.chat_name.split('-')) + '/photo'">
                             </div>
                             <div class="col-8">
                                 {{ getChatName(chat.chat_name.split("-")) }}
