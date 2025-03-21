@@ -64,11 +64,14 @@
                         v-if="this.selectedChat.chat_group">
 
                     <h6 v-if="this.selectedChat.chat_group">Members:</h6>
+                    
+                    
                     <ul class="list-group mb-2" v-if="this.selectedChat.chat_group">
                         <li v-for="(member, index) in this.selectedChat.chat_members.split('-')" :key="index" class="list-group-item">
                             {{ member }}
                         </li>
                     </ul>
+                    
 
                     <h6 v-if="this.selectedChat.chat_group">Add Members:</h6>
                     <div class="input-group mb-2" v-if="this.selectedChat.chat_group">

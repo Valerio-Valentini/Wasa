@@ -137,8 +137,8 @@ export default {
 
     mounted() {
         this.selectedChat = localStorage.getItem("selectedChat")
-        setInterval(async () => {await this.update_chats()}, 4000)
-        setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected)}, 4000)
+        setInterval(async () => {await this.update_chats()}, 1000)
+        setInterval(async () => {if (this.chatSelected != null) await this.selectedChatHandler(this.chatSelected)}, 1000)
 
     },
 

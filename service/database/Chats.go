@@ -102,6 +102,7 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 		if err != nil {
 			return nil, err
 		}
+		/*
 		var users []string
 		rows, err = db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", id)
 		if err != nil {
@@ -115,8 +116,15 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 			}
 			users = append(users, user)
 		}
-		allUsers := strings.Join(users, "-")
-		chat.Members = allUsers
+		// allUsers := strings.Join(users, "-")
+		chat.Members = users
+		*/
+		members, err := db.GetMembers(chat.Chat_id)
+		if err != nil {
+			return nil, err
+		}
+		chat.Members = members
+
 		err = db.c.QueryRow("SELECT owner, content, date FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview, &chat.Date)
 		if err == sql.ErrNoRows {
 			chat.Preview = ""
@@ -171,4 +179,24 @@ func (db *appdbimpl) SetGroupName(user_id string, chat_id int, name string) erro
 	}
 
 	return nil
+}
+
+func (db *appdbimpl) GetMembers(chat_id int) (string, error) {
+		var users []string
+		rows, err := db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", chat_id)
+		if err != nil {
+			return "", err
+		}
+		for rows.Next() {
+			var user string
+			err = rows.Scan(&user)
+			if err != nil {
+				return "", err
+			}
+			users = append(users, user)
+		}
+		allUsers := strings.Join(users, "-")
+		
+
+	return allUsers, nil
 }
