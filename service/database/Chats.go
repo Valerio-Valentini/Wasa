@@ -1,9 +1,9 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"strconv"
-	"database/sql"
 	"strings"
 )
 
@@ -96,28 +96,28 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 		var chat ChatPreview
 		err = rows.Scan(&id)
 		if err != nil {
-			return nil, err 
+			return nil, err
 		}
 		err = db.c.QueryRow("SELECT * FROM chat WHERE chat_id = ? ", id).Scan(&chat.Chat_id, &chat.Chat_group, &chat.Chat_photo, &chat.Chat_name)
 		if err != nil {
 			return nil, err
 		}
 		/*
-		var users []string
-		rows, err = db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", id)
-		if err != nil {
-			return nil, err
-		}
-		for rows.Next() {
-			var user string
-			err = rows.Scan(&user)
+			var users []string
+			rows, err = db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", id)
 			if err != nil {
 				return nil, err
 			}
-			users = append(users, user)
-		}
-		// allUsers := strings.Join(users, "-")
-		chat.Members = users
+			for rows.Next() {
+				var user string
+				err = rows.Scan(&user)
+				if err != nil {
+					return nil, err
+				}
+				users = append(users, user)
+			}
+			// allUsers := strings.Join(users, "-")
+			chat.Members = users
 		*/
 		members, err := db.GetMembers(chat.Chat_id)
 		if err != nil {
@@ -131,8 +131,8 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 			chat.Owner = ""
 			chat.Date = ""
 		}
-		if err != nil && err !=sql.ErrNoRows {
-			
+		if err != nil && err != sql.ErrNoRows {
+
 			return nil, err
 		}
 		chats = append(chats, chat)
@@ -182,21 +182,20 @@ func (db *appdbimpl) SetGroupName(user_id string, chat_id int, name string) erro
 }
 
 func (db *appdbimpl) GetMembers(chat_id int) (string, error) {
-		var users []string
-		rows, err := db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", chat_id)
+	var users []string
+	rows, err := db.c.Query("SELECT user_id FROM chat_members WHERE chat_id = ? ", chat_id)
+	if err != nil {
+		return "", err
+	}
+	for rows.Next() {
+		var user string
+		err = rows.Scan(&user)
 		if err != nil {
 			return "", err
 		}
-		for rows.Next() {
-			var user string
-			err = rows.Scan(&user)
-			if err != nil {
-				return "", err
-			}
-			users = append(users, user)
-		}
-		allUsers := strings.Join(users, "-")
-		
+		users = append(users, user)
+	}
+	allUsers := strings.Join(users, "-")
 
 	return allUsers, nil
 }

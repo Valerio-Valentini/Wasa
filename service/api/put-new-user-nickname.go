@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"strings"
-	"path/filepath"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

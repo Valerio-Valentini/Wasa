@@ -42,14 +42,14 @@ type AppDatabase interface {
 	StartChat(group bool, members []string) (int64, error)       // ok
 	AddMember(chat_id string, user_id string) error              // ok
 	LeaveChat(chat_id string, user_id string) error              // ok
-	GetChats(user_id string) ([]ChatPreview, error)                     // ok
+	GetChats(user_id string) ([]ChatPreview, error)              // ok
 	UpdateGroupPhoto(chat_id int, photo_id int) (int64, error)   // ok
 	SetGroupName(user_id string, chat_id int, name string) error // ok
 	GetMembers(chat_id int) (string, error)
 	// ----------------------------------------------------- Messages_Functions
-	UpdateMessageStatus(user_id string, chat_id string, message_id string) error // DA QUI
+	UpdateMessageStatus(user_id string, chat_id string, message_id string) error                        // DA QUI
 	GetMessagesFromChat(chat_id string) ([]Message, error)                                              // ok
-	SendMedia(chat_id string, owner string) (int64, error)                                 // ok
+	SendMedia(chat_id string, owner string) (int64, error)                                              // ok
 	SendMessage(chat_id int, owner string, message Message) (int64, error)                              // ok
 	DeleteMessage(owner string, chat_id string, message_id string) error                                // ok
 	ForwardMessage(owner string, chat1_id string, original_msg_id string, chat2_id string) (int, error) // ok

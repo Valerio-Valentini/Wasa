@@ -152,7 +152,7 @@ func (db *appdbimpl) UpdateMessageStatus(user_id string, chat_id string, message
 	if err != nil {
 		return err
 	}
-	if(presence > 0) {
+	if presence > 0 {
 		_, err := db.c.Exec("UPDATE messages_status SET message_id = ? WHERE user_id = ? AND chat_id = ?", message_id, user_id, chat_id)
 		if err != nil {
 			return err
@@ -178,7 +178,7 @@ func (db *appdbimpl) UpdateMessageStatus(user_id string, chat_id string, message
 	if err != nil {
 		return err
 	}
-	if(membri_letto == membri_tot) {
+	if membri_letto == membri_tot {
 		_, err = db.c.Exec("UPDATE messages SET status = 1 WHERE message_id <= ?", message)
 		if err != nil {
 			return err

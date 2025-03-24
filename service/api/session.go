@@ -22,7 +22,6 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 		// w.WriteHeader(http.StatusOk)
 		err = json.NewEncoder(w).Encode(user)
 		if err != nil {
-			// fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			// ctx.Logger.WithError(err).Error("session: can't create response json")
 			return
@@ -31,7 +30,6 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 	err = rt.db.InsertUser(user.User_id)
 	if err != nil {
-		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		// ctx.Logger.WithError(err).Error("session: can't create response json")
 		return
@@ -44,7 +42,6 @@ func (rt *_router) session(w http.ResponseWriter, r *http.Request, ps httprouter
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(user)
 	if err != nil {
-		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

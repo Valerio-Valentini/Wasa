@@ -20,7 +20,6 @@ func (rt *_router) createNewChat(w http.ResponseWriter, r *http.Request, ps http
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		// fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

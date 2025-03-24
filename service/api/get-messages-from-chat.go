@@ -12,7 +12,6 @@ func (rt *_router) getMessagesFromChat(w http.ResponseWriter, r *http.Request, p
 
 	messages, err := rt.db.GetMessagesFromChat(ps.ByName("chat_id"))
 	if err != nil {
-		// fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -25,7 +25,6 @@ func (rt *_router) updateStatus(w http.ResponseWriter, r *http.Request, ps httpr
 	err = json.NewDecoder(r.Body).Decode(&Data)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		// fmt.Println(err)
 		return
 	}
 	err = rt.db.UpdateMessageStatus(user, Data.Chat_id, Data.Message_id)

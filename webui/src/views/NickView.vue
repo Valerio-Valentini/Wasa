@@ -12,9 +12,7 @@ export default {
                     await this.$axios.put("/users/" + this.identifier, {
                         user_id: this.username.trim()
                         })
-                    localStorage.setItem("id", this.username)
-                    this.$emit("user_login", true)
-                    this.$router.push("/home")
+                    alert("Nickname has been changed!")
                 }
             catch (error) {
                 console.log(error)
@@ -34,6 +32,13 @@ export default {
                     }
                 })
             }
+            alert("Your photo has been changed!")
+        },
+
+        Home() {
+            localStorage.setItem("id", this.username)
+            this.$emit("user_login", true)
+            this.$router.push("/home")
         }
     },
 
@@ -43,25 +48,33 @@ export default {
 
 <template>
     <div class="container-fluid">
+        <h6>UPDATE NICKNAME</h6>
         <div class="row">
-            <div class="input-group flex-nowrap">
-                <span class="input-group-text" id="addon-wrapping">@</span>
-                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
-                v-model="username">
+            <div class="col-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping">@</span>
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping"
+                    v-model="username">
                 </div>    
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-primary" @click="changeUsername">Update Username
+                </button>
+            </div>
         </div>
-        <div class="row">
-            <button type="button" class="btn btn-primary" @click="changeUsername">Update Username
-            </button>
-        </div>
-
+        <h6>UPDATE PHOTO</h6>
         <div class="row">
             <div class="input-group flex-nowrap">
                 <input id="fileUploader" type="file" class="profile-file-upload" accept=".jpg">
-                <label class="btn" @click="uploadFile">
+                <label class="btn btn-primary" @click="uploadFile">
                     Update Photo
                 </label>
             </div>    
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <button type="button" class="btn btn-primary" @click="Home">Home</button>
+            </div>
         </div>
     </div>
 </template>
