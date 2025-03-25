@@ -12,7 +12,9 @@ export default {
                     await this.$axios.put("/users/" + this.identifier, {
                         user_id: this.username.trim()
                         })
-                    alert("Nickname has been changed!")
+                    localStorage.setItem("id", this.username)
+                    this.$emit("user_login", true)
+                    this.$router.push("/home")
                 }
             catch (error) {
                 console.log(error)
@@ -36,8 +38,6 @@ export default {
         },
 
         Home() {
-            localStorage.setItem("id", this.username)
-            this.$emit("user_login", true)
             this.$router.push("/home")
         }
     },
