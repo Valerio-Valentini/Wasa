@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -126,12 +127,12 @@ func (db *appdbimpl) GetChats(user_id string) ([]ChatPreview, error) {
 		chat.Members = members
 
 		err = db.c.QueryRow("SELECT owner, content, date FROM messages WHERE chat_id = ? ORDER BY date DESC LIMIT 1", id).Scan(&chat.Owner, &chat.Preview, &chat.Date)
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			chat.Preview = ""
 			chat.Owner = ""
 			chat.Date = ""
 		}
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 
 			return nil, err
 		}

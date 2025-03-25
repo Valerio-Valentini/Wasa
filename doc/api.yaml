@@ -146,7 +146,6 @@ paths:
       security:
         - bearerAuth: [] 
     get:
-      get:
       tags: ["user"]
       summary: retrieves an user's photo
       description: get the user's photo
@@ -215,7 +214,6 @@ paths:
       security:
         - bearerAuth: []
     get:
-      get:
       tags: ["group"]
       summary: retrieves a group's photo
       description: get group photo
@@ -315,7 +313,7 @@ paths:
       tags: ["chat"]
       summary: retrieves a chat's messages
       description: get all the messages of an user's chat
-      operationId: getMyConversation
+      operationId: getConversation
       responses:
         '200':
           $ref: "#/components/responses/stream"
@@ -431,7 +429,10 @@ paths:
           content:
             application/json:
               schema:
+                description: array of reactions to messages
                 type: array
+                minItems: 0
+                maxItems: 100
                 items:
                   $ref: "#/components/schemas/reaction"
         '401':
@@ -843,6 +844,8 @@ components:
         date:
           description: Date and time of the messagae
           type: string
+          minLength: 20
+          maxLength: 20
           format: date-time
           example: 2017-07-21T17:32:28Z
           readOnly: true
@@ -859,8 +862,8 @@ components:
         status:
           description: Status of a message
           type: string
-          enum: ["gray", "blue"]
-          example: blue
+          enum: ["read", "sent"]
+          example: sent
         owner:
           $ref: "#/components/schemas/user_nickname/properties/nickname"
           
