@@ -1,9 +1,7 @@
 package api
 
 import (
-	"bytes"
 	"github.com/julienschmidt/httprouter"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,16 +11,11 @@ import (
 func (rt *_router) deleteMedia(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	aut := r.Header.Get("Authorization")
 	valori := strings.Split(aut, " ")
-	user_id := valori[0]
+	user_id := valori[1]
 
 	w.Header().Set("Content-Type", "application/json")
-	data, err := io.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		// ctx.Logger.WithError(err).Error("Can't retrieve photo data")
-		return
-	}
-	r.Body = io.NopCloser(bytes.NewBuffer(data))
+	// data, err := io.ReadAll(r.Body)
+	// r.Body = io.NopCloser(bytes.NewBuffer(data))
 	id, err := rt.GetIdPhoto(user_id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

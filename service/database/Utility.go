@@ -23,14 +23,13 @@ func (db *appdbimpl) VerifyUserIsMamberOfChat(user_id string, chat_id string) (b
 	var presence int
 	err := db.c.QueryRow("SELECT 1 FROM chat_members WHERE user_id = ? AND chat_id = ? LIMIT 1 ", user_id, chat_id).Scan(&presence)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return false, nil
-		}
 
 		return false, err
 	}
-
-	return true, nil
+	if presence == 1 {
+		return true, nil
+	}
+	return false, nil
 }
 
 func (db *appdbimpl) GetIdProfilePicture(user_id string) (int64, error) {
