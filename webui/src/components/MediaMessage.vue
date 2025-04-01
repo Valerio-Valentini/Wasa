@@ -13,7 +13,7 @@
     </div>
 
     <div class="message-content">
-      <img id="photo" :src="'http://localhost:3000/chats/' + msg.chat_id + '/media/' + msg.photo_id">
+      <img id="photo" :src="source + '/chats/' + msg.chat_id + '/media/' + msg.photo_id">
     </div>
 
     <div class="reactions mt-4">
@@ -122,6 +122,7 @@ export default {
       showReactionsPopup: false,
       userToForward: "",
       foundUsers : null,
+      source: __API_URL__
     };
   },
 

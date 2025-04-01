@@ -17,6 +17,9 @@ export default {
                     this.$router.push("/home")
                 }
             catch (error) {
+                if(error.response.status == 409) {
+                    alert("UTENTE GIA' ESISTENTE, RIPROVARE.")
+                }
                 console.log(error)
             }
         },

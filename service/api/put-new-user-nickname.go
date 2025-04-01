@@ -33,7 +33,15 @@ func (rt *_router) putNewUserNickname(w http.ResponseWriter, r *http.Request, ps
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
+	exists, err = rt.VerifyUser(nick.User_id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if exists {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
 	err = rt.db.UpdateUser(user, nick.User_id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
